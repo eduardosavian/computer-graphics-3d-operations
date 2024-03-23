@@ -1,0 +1,34 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install FreeGLUT
+      run: sudo apt-get install freeglut3-dev
+
+    - name: Build
+      run: make
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v1.0.0  # Update this with your desired tag name
+        release_name: Release v1.0.0  # Update this with your desired release name
+        body: |
+          Describe your release here.
+        draft: false
+        prerelease: false

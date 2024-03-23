@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
 
 	glutInitWindowSize(512, 512);
 
-	glutCreateWindow("Desenhando uma linha");
+	glutCreateWindow("Drawings");
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glOrtho(0, 256, 0, 256, -1, 1);
 
