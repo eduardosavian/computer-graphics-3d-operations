@@ -94,18 +94,6 @@ Poligono criar_poligono(double posicao_x, double posicao_y, double tamanho_lado,
 	return novo_poligono;
 }
 
-void movimentar(Poligono& poligono, double distancia, double angulo) {
-	
-}
-
-void escalar(Poligono& poligono, double escala_x, double escala_y) {
-	
-}
-
-void rotacionar(Poligono& poligono, double angulo) {
-
-}
-
 void desenhar(Poligono poligono) {
 	glColor3f(0.0, 0.0, 0.0);
 	glBegin(GL_LINES);

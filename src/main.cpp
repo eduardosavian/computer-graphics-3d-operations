@@ -6,9 +6,9 @@
 
 
 int main(int argc, char** argv) {
-	//InitGL(argc, argv);
+	InitGL(argc, argv);
 
-	smain(argc, argv);
+	//smain(argc, argv);
 
 	return 0;
 }
