@@ -8,19 +8,19 @@ PROJECT = cgt
 
 all: cgt
 
-cgt: main.o utils.o polygon.o solid.o
+cgt: $(OPATH)/main.o $(OPATH)/utils.o $(OPATH)/polygon.o $(OPATH)/solid.o
 	$(CC) -o cgt $(OPATH)/main.o $(OPATH)/utils.o $(OPATH)/polygon.o $(OPATH)/solid.o $(CFLAGS)
 
-main.o: $(CPATH)/main.cpp $(CPATH)/polygon.hpp
+$(OPATH)/main.o: $(CPATH)/main.cpp $(CPATH)/utils.hpp $(CPATH)/polygon.hpp $(CPATH)/solid.hpp
 	$(CC) -c -o $(OPATH)/main.o $(CPATH)/main.cpp $(CFLAGS)
 
-utils.o: $(CPATH)/utils.cpp $(CPATH)/utils.hpp
+$(OPATH)/utils.o: $(CPATH)/utils.cpp $(CPATH)/utils.hpp
 	$(CC) -c -o $(OPATH)/utils.o $(CPATH)/utils.cpp $(CFLAGS)
 
-polygon.o: $(CPATH)/polygon.cpp $(CPATH)/polygon.hpp
+$(OPATH)/polygon.o: $(CPATH)/polygon.cpp $(CPATH)/polygon.hpp
 	$(CC) -c -o $(OPATH)/polygon.o $(CPATH)/polygon.cpp $(CFLAGS)
 
-solid.o: $(CPATH)/solid.cpp $(CPATH)/solid.hpp
+$(OPATH)/solid.o: $(CPATH)/solid.cpp $(CPATH)/solid.hpp
 	$(CC) -c -o $(OPATH)/solid.o $(CPATH)/solid.cpp $(CFLAGS)
 
 clean:
