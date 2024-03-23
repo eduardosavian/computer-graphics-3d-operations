@@ -1,6 +1,7 @@
 #include <iostream>
 
-#include "polygons.hpp"
+#include "polygon.hpp"
+#include "solid.hpp"
 
 #include <GL/freeglut.h>
 #include <vector>

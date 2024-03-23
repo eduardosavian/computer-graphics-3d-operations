@@ -1,7 +1,7 @@
-#ifndef POLYGONS_CPP
-#define POLYGONS_CPP
+#ifndef POLYGON_CPP
+#define POLYGON_CPP
 
-#include "polygons.hpp"
+#include "polygon.hpp"
 
 void show() {
 

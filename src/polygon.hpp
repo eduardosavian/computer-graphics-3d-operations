@@ -1,5 +1,5 @@
-#ifndef POLYGONS_HPP
-#define POLYGONS_HPP
+#ifndef POLYGON_HPP
+#define POLYGON_HPP
 
 #include <GL/freeglut.h>
 
