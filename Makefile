@@ -8,11 +8,14 @@ PROJECT = cgt
 
 all: cgt
 
-cgt: main.o polygon.o solid.o
-	$(CC) -o cgt $(OPATH)/main.o $(OPATH)/polygon.o $(OPATH)/solid.o $(CFLAGS)
+cgt: main.o utils.o polygon.o solid.o
+	$(CC) -o cgt $(OPATH)/main.o $(OPATH)/utils.o $(OPATH)/polygon.o $(OPATH)/solid.o $(CFLAGS)
 
 main.o: $(CPATH)/main.cpp $(CPATH)/polygon.hpp
 	$(CC) -c -o $(OPATH)/main.o $(CPATH)/main.cpp $(CFLAGS)
+
+utils.o: $(CPATH)/utils.cpp $(CPATH)/utils.hpp
+	$(CC) -c -o $(OPATH)/utils.o $(CPATH)/utils.cpp $(CFLAGS)
 
 polygon.o: $(CPATH)/polygon.cpp $(CPATH)/polygon.hpp
 	$(CC) -c -o $(OPATH)/polygon.o $(CPATH)/polygon.cpp $(CFLAGS)
