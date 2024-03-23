@@ -4,7 +4,7 @@
 
 #include "solid.hpp"
 
-void InitGL(int argc, char** argv);
+//void InitGL(int argc, char** argv);
 
 
 #endif

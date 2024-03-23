@@ -27,7 +27,7 @@ void desenhar(Poligono poligono);
 void movimentar(Poligono& poligono, double distancia, double angulo);
 void escalar(Poligono& poligono, double escala_x, double escala_y);
 void rotacionar(Poligono& poligono, double angulo);
-void display();
+void display(Poligono pentagono);
 void redraw(int value);
 void keyboard(unsigned char key, int x, int y);
 void keyboard_special(int key, int x, int y);
