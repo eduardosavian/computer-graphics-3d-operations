@@ -8,17 +8,17 @@ PROJECT = cgt
 
 all: cgt
 
-cgt: main.o polygons.o solids.o
-	$(CC) -o cgt $(OPATH)/main.o $(OPATH)/polygons.o solids.o $(CFLAGS)
+cgt: main.o polygon.o solid.o
+	$(CC) -o cgt $(OPATH)/main.o $(OPATH)/polygon.o $(OPATH)/solid.o $(CFLAGS)
 
-main.o: $(CPATH)/main.cpp $(CPATH)/polygons.hpp  $(CPATH)/polygons.hpp
+main.o: $(CPATH)/main.cpp $(CPATH)/polygon.hpp
 	$(CC) -c -o $(OPATH)/main.o $(CPATH)/main.cpp $(CFLAGS)
 
-polygons.o: $(CPATH)/polygons.cpp $(CPATH)/polygons.hpp
-	$(CC) -c -o $(OPATH)/polygons.o $(CPATH)/polygons.cpp $(CFLAGS)
+polygon.o: $(CPATH)/polygon.cpp $(CPATH)/polygon.hpp
+	$(CC) -c -o $(OPATH)/polygon.o $(CPATH)/polygon.cpp $(CFLAGS)
 
-solids.o: $(CPATH)/solids.cpp $(CPATH)/solids.hpp $(CC) -c -o $(OPATH)/solids.o $(CPATH)/solids.cpp $(CFLAGS)
-	$(CC) -c -o $(OPATH)/solids.o $(CPATH)/solids.cpp $(CFLAGS)
+solid.o: $(CPATH)/solid.cpp $(CPATH)/solid.hpp
+	$(CC) -c -o $(OPATH)/solid.o $(CPATH)/solid.cpp $(CFLAGS)
 
 clean:
 	rm -rf $(OPATH)/*.o *~ cgt
