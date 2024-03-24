@@ -19,7 +19,7 @@ struct Cube {
 
 void rotateX(std::vector<double>& vertices, double angle);
 void rotateY(std::vector<double>& vertices, double angle);
-void cube();
+void displayCube();
 
 
 #endif

@@ -5,32 +5,6 @@
 #include "cube.hpp"
 
 
-// Rotation around X axis
-void rotateX(std::vector<double>& vertices, double angle) {
-    double c = cos(angle * 3.141592653589793 / 180.0);
-    double s = sin(angle * 3.141592653589793 / 180.0);
-
-    for (size_t i = 0; i < vertices.size(); i += 3) {
-        double y = vertices[i + 1];
-        double z = vertices[i + 2];
-        vertices[i + 1] = y * c - z * s;
-        vertices[i + 2] = y * s + z * c;
-    }
-}
-
-// Rotation around Y axis
-void rotateY(std::vector<double>& vertices, double angle) {
-    double c = cos(angle * 3.141592653589793 / 180.0);
-    double s = sin(angle * 3.141592653589793 / 180.0);
-
-    for (size_t i = 0; i < vertices.size(); i += 3) {
-        double x = vertices[i];
-        double z = vertices[i + 2];
-        vertices[i] = x * c + z * s;
-        vertices[i + 2] = -x * s + z * c;
-    }
-}
-
 Cube::Cube() {
     // Define the 8 vertices of the cube
     vertices = {
@@ -102,6 +76,8 @@ GLfloat colors[32][3] = {
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
 
+
+// Handle key press events
 void handleKeypress(unsigned char key, int x, int y) {
     switch (key) {
         case 'w': // Rotate clockwise around X axis when 'w' is pressed
@@ -120,7 +96,35 @@ void handleKeypress(unsigned char key, int x, int y) {
     glutPostRedisplay(); // Notify GLUT that the display needs to be redrawn
 }
 
-void cube() {
+
+// Rotation around X axis
+void rotateX(std::vector<double>& vertices, double angle) {
+    double c = cos(angle * 3.141592653589793 / 180.0);
+    double s = sin(angle * 3.141592653589793 / 180.0);
+
+    for (size_t i = 0; i < vertices.size(); i += 3) {
+        double y = vertices[i + 1];
+        double z = vertices[i + 2];
+        vertices[i + 1] = y * c - z * s;
+        vertices[i + 2] = y * s + z * c;
+    }
+}
+
+// Rotation around Y axis
+void rotateY(std::vector<double>& vertices, double angle) {
+    double c = cos(angle * 3.141592653589793 / 180.0);
+    double s = sin(angle * 3.141592653589793 / 180.0);
+
+    for (size_t i = 0; i < vertices.size(); i += 3) {
+        double x = vertices[i];
+        double z = vertices[i + 2];
+        vertices[i] = x * c + z * s;
+        vertices[i + 2] = -x * s + z * c;
+    }
+}
+
+// Display the cube
+void displayCube() {
     srand(time(NULL));
 
     Cube cube = Cube();
