@@ -1,5 +1,5 @@
 CC = clang++
-CFLAGS = -lGL -lGLU -lglut -Wall -Wextra -std=c++23 -O2
+CFLAGS = -lGL -lGLU -lglut -Wall -Wextra -std=c++20 -O2
 OPATH = objects
 CPATH = src
 PROJECT = cgt
