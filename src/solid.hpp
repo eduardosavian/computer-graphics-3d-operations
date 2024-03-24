@@ -5,6 +5,8 @@
 #include <vector>
 
 #include <GL/freeglut.h>
+#include <ctime>     // For seeding srand()
+#include <cstdlib>
 
 struct Solid {
     std::vector<double> vertices;
