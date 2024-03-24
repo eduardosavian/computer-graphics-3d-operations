@@ -1,14 +1,17 @@
 #include <iostream>
 
 #include "utils.hpp"
-#include "polygon.hpp"
 #include "solid.hpp"
 
 
 int main(int argc, char** argv) {
-	//InitGL(argc, argv);
+	setupGL(argc, argv);
 
-	smain(argc, argv);
+    glutDisplayFunc(cube2);
+    glutReshapeFunc(reshape);
+
+    initGL();
+    glutMainLoop();
 
 	return 0;
 }

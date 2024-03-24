@@ -4,7 +4,10 @@
 
 #include "solid.hpp"
 
-//void InitGL(int argc, char** argv);
+void setupGL(int argc, char** argv);
+void initGL();
+void display();
+void reshape(GLsizei width, GLsizei height);
 
 
 #endif
