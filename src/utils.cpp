@@ -20,6 +20,8 @@ void initGL() {
     glClearDepth(1.0f);                   // Define o buffer de profundidade para o mais distante possível
     glEnable(GL_DEPTH_TEST);   // Habilita o culling de profundidade
     glDepthFunc(GL_LEQUAL);    // Define o tipo de teste de profundidade
+
+    glutMainLoop();
 }
 
 

@@ -5,6 +5,32 @@
 #include "cube.hpp"
 
 
+// Rotation around X axis
+void rotateX(std::vector<double>& vertices, double angle) {
+    double c = cos(angle * 3.141592653589793 / 180.0);
+    double s = sin(angle * 3.141592653589793 / 180.0);
+
+    for (size_t i = 0; i < vertices.size(); i += 3) {
+        double y = vertices[i + 1];
+        double z = vertices[i + 2];
+        vertices[i + 1] = y * c - z * s;
+        vertices[i + 2] = y * s + z * c;
+    }
+}
+
+// Rotation around Y axis
+void rotateY(std::vector<double>& vertices, double angle) {
+    double c = cos(angle * 3.141592653589793 / 180.0);
+    double s = sin(angle * 3.141592653589793 / 180.0);
+
+    for (size_t i = 0; i < vertices.size(); i += 3) {
+        double x = vertices[i];
+        double z = vertices[i + 2];
+        vertices[i] = x * c + z * s;
+        vertices[i + 2] = -x * s + z * c;
+    }
+}
+
 Cube::Cube() {
     // Define the 8 vertices of the cube
     vertices = {
@@ -95,16 +121,19 @@ void handleKeypress(unsigned char key, int x, int y) {
 }
 
 void cube() {
+    srand(time(NULL));
+
     Cube cube = Cube();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Limpa o buffer de cor e o de profundidade
     glMatrixMode(GL_MODELVIEW);     // Operar na matriz de ModelView
 
-    srand(time(NULL));
     glLoadIdentity();                 // Reseta para a matriz identidade
     glTranslatef(0.0f, 0.0f, -7.0f);  // Move para a direita da view o que será desenhado
-    glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotaciona o cubo em torno do eixo X
-    glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotaciona o cubo em torno do eixo Y
+       // Apply rotation around X axis
+    rotateX(cube.vertices, angleX);
+    // Apply rotation around Y axis
+    rotateY(cube.vertices, angleY);
 
     glBegin(GL_LINES);                // Começa a desenhar as linhas do cubo
     for (uint i = 0; i < cube.edges.size(); i += 2) {
@@ -126,7 +155,6 @@ void cube() {
     glEnd();
     glutSwapBuffers();  // Double Buffer, troca o atual pelo que está aguardando
 }
-
 
 
 #endif

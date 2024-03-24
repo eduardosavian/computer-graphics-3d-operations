@@ -8,7 +8,7 @@
 #include <GL/freeglut.h>
 #include <ctime>
 #include <cstdlib>
-
+#include <cmath>
 
 struct Cube {
     std::vector<double> vertices;
@@ -17,7 +17,8 @@ struct Cube {
     Cube();
 };
 
-
+void rotateX(std::vector<double>& vertices, double angle);
+void rotateY(std::vector<double>& vertices, double angle);
 void cube();
 
 
