@@ -15,6 +15,7 @@ struct Cube {
     std::vector<int> edges;
 
     Cube();
+    void scale(double factor);
 };
 
 void rotateX(std::vector<double>& vertices, double angle);

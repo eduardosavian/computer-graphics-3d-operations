@@ -35,6 +35,18 @@ Cube::Cube() {
     };
 }
 
+  // Scale the cube uniformly
+    void Cube::scale(double factor) {
+        for (size_t i = 0; i < vertices.size(); ++i) {
+            vertices[i] *= factor;
+        }
+
+        std::cout << "Scaling the cube by " << factor << std::endl;
+        //print vertices
+        for (size_t i = 0; i < vertices.size(); i += 3) {
+            std::cout << "Vertex " << i / 3 << ": (" << vertices[i] << ", " << vertices[i + 1] << ", " << vertices[i + 2] << ")" << std::endl;
+        }
+    };
 
 GLfloat colors[32][3] = {
     {0.0f, 1.0f, 0.0f},    // Green
@@ -76,6 +88,7 @@ GLfloat colors[32][3] = {
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
 
+Cube cube;
 
 // Handle key press events
 void handleKeypress(unsigned char key, int x, int y) {
@@ -91,6 +104,12 @@ void handleKeypress(unsigned char key, int x, int y) {
             break;
         case 'd': // Rotate counterclockwise around Y axis when 'd' is pressed
             angleY -= 1.0f;
+            break;
+        case 'f': // Make the cube bigger
+            cube.scale(10.0); // Increase size by 10%
+            break;
+        case 'r': // Make the cube smaller
+            cube.scale(0.9); // Decrease size by 10%
             break;
     }
     glutPostRedisplay(); // Notify GLUT that the display needs to be redrawn
@@ -127,7 +146,7 @@ void rotateY(std::vector<double>& vertices, double angle) {
 void displayCube() {
     srand(time(NULL));
 
-    Cube cube = Cube();
+    cube = Cube();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Limpa o buffer de cor e o de profundidade
     glMatrixMode(GL_MODELVIEW);     // Operar na matriz de ModelView
