@@ -7,7 +7,7 @@
 int main(int argc, char** argv) {
 	setupGL(argc, argv);
 
-    glutDisplayFunc(cube2);
+    glutDisplayFunc(cube);
     glutReshapeFunc(reshape);
 
     initGL();

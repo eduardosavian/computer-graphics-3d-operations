@@ -5,6 +5,31 @@
 #include "solid.hpp"
 
 
+Solid::Solid() {
+    // Define the 8 vertices of the cube
+    vertices = {
+        -1.0, -1.0, -1.0,  // Vertex 0
+        1.0, -1.0, -1.0,  // Vertex 1
+        1.0,  1.0, -1.0,  // Vertex 2
+        -1.0,  1.0, -1.0,  // Vertex 3
+        -1.0, -1.0,  1.0,  // Vertex 4
+        1.0, -1.0,  1.0,  // Vertex 5
+        1.0,  1.0,  1.0,  // Vertex 6
+        -1.0,  1.0,  1.0   // Vertex 7
+    };
+
+    // Define the 6 faces of the cube, each face is made up of 2 triangles
+    faces = {
+    0, 1, 2, 3,  // Face 0 (Front)
+    1, 5, 6, 2,  // Face 1 (Right)
+    5, 4, 7, 6,  // Face 2 (Back)
+    4, 0, 3, 7,  // Face 3 (Left)
+    3, 2, 6, 7,  // Face 4 (Top)
+    4, 5, 1, 0   // Face 5 (Bottom)
+    };
+}
+
+
 GLfloat colors[32][3] = {
     {0.0f, 1.0f, 0.0f},    // Green
     {1.0f, 0.5f, 0.0f},    // Orange
@@ -40,34 +65,10 @@ GLfloat colors[32][3] = {
     {0.5f, 0.0f, 0.2f}    // Dark Maroon
 };
 
-Solid::Solid() {
-    // Define the 8 vertices of the cube
-    vertices = {
-        -1.0, -1.0, -1.0,  // Vertex 0
-        1.0, -1.0, -1.0,  // Vertex 1
-        1.0,  1.0, -1.0,  // Vertex 2
-        -1.0,  1.0, -1.0,  // Vertex 3
-        -1.0, -1.0,  1.0,  // Vertex 4
-        1.0, -1.0,  1.0,  // Vertex 5
-        1.0,  1.0,  1.0,  // Vertex 6
-        -1.0,  1.0,  1.0   // Vertex 7
-    };
 
-    // Define the 6 faces of the cube, each face is made up of 2 triangles
-    faces = {
-    0, 1, 2, 3,  // Face 0 (Front)
-    1, 5, 6, 2,  // Face 1 (Right)
-    5, 4, 7, 6,  // Face 2 (Back)
-    4, 0, 3, 7,  // Face 3 (Left)
-    3, 2, 6, 7,  // Face 4 (Top)
-    4, 5, 1, 0   // Face 5 (Bottom)
-    };
+void cube() {
+    Solid solid = Solid();
 
-}
-
-Solid solid = Solid();
-
-void cube2() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Limpa o buffer de cor e o de profundidade
     glMatrixMode(GL_MODELVIEW);     //Operar na matriz de ModelView
 
@@ -97,60 +98,5 @@ void cube2() {
     glutSwapBuffers();  // Double Buffer, troca o atual pelo que está aguardando
 }
 
-void cube() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Limpa o buffer de cor e o de profundidade
-    glMatrixMode(GL_MODELVIEW);     //Operar na matriz de ModelView
-
-    // Renderiza um cubo com 6 quads diferentes
-    glLoadIdentity();                 // Reseta para a matriz identidade
-    glTranslatef(1.5f, 0.0f, -10.0f);  // Move para a direta da view o que será desenhado
-
-    glBegin(GL_QUADS);                // Começa a desenhar o cubo
-       // Face de cima (y = 1.0f)
-       // Define os vértice em ordem anti-horário com a face apontando para cima
-    glColor3f(0.0f, 1.0f, 0.0f);     // Verde
-    glVertex3f(1.0f, 1.0f, -1.0f);
-    glVertex3f(-1.0f, 1.0f, -1.0f);
-    glVertex3f(-1.0f, 1.0f, 1.0f);
-    glVertex3f(1.0f, 1.0f, 1.0f);
-
-    // Face de cima (y = -1.0f)
-    glColor3f(1.0f, 0.5f, 0.0f);     // Laranja
-    glVertex3f(1.0f, -1.0f, 1.0f);
-    glVertex3f(-1.0f, -1.0f, 1.0f);
-    glVertex3f(-1.0f, -1.0f, -1.0f);
-    glVertex3f(1.0f, -1.0f, -1.0f);
-
-    // Face da frente  (z = 1.0f)
-    glColor3f(1.0f, 0.0f, 0.0f);     // Vermelho
-    glVertex3f(1.0f, 1.0f, 1.0f);
-    glVertex3f(-1.0f, 1.0f, 1.0f);
-    glVertex3f(-1.0f, -1.0f, 1.0f);
-    glVertex3f(1.0f, -1.0f, 1.0f);
-
-    // Face de trás (z = -1.0f)
-    glColor3f(1.0f, 1.0f, 0.0f);     // Amarelo
-    glVertex3f(1.0f, -1.0f, -1.0f);
-    glVertex3f(-1.0f, -1.0f, -1.0f);
-    glVertex3f(-1.0f, 1.0f, -1.0f);
-    glVertex3f(1.0f, 1.0f, -1.0f);
-
-    // Face esquerda (x = -1.0f)
-    glColor3f(0.0f, 0.0f, 1.0f);     // Azul
-    glVertex3f(-1.0f, 1.0f, 1.0f);
-    glVertex3f(-1.0f, 1.0f, -1.0f);
-    glVertex3f(-1.0f, -1.0f, -1.0f);
-    glVertex3f(-1.0f, -1.0f, 1.0f);
-
-    // Face direita (x = 1.0f)
-    glColor3f(1.0f, 0.0f, 1.0f);     // Magenta
-    glVertex3f(1.0f, 1.0f, -1.0f);
-    glVertex3f(1.0f, 1.0f, 1.0f);
-    glVertex3f(1.0f, -1.0f, 1.0f);
-    glVertex3f(1.0f, -1.0f, -1.0f);
-    glEnd();
-
-    glutSwapBuffers();  // Double Buffer, troca o atual pelo que está aguardando
-}
 
 #endif

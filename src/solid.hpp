@@ -17,5 +17,4 @@ struct Solid {
 };
 
 void cube();
-void cube2();
 #endif
