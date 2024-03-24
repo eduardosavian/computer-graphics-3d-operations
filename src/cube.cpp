@@ -35,17 +35,6 @@ Cube::Cube() {
     };
 }
 
-  // Scale the cube uniformly
-    Cube scale(Cube cube, double factor) {
-        for (size_t i = 0; i < cube.vertices.size(); ++i) {
-            cube.vertices[i] *= factor;
-        }
-
-        std::cout << "Scaling the cube by " << factor << std::endl;
-        //print vertices
-        return cube;
-    };
-
 GLfloat colors[32][3] = {
     {0.0f, 1.0f, 0.0f},    // Green
     {1.0f, 0.5f, 0.0f},    // Orange
@@ -85,8 +74,20 @@ GLfloat colors[32][3] = {
 // Global variable to hold the rotation angles
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
+GLfloat factor = 1.2f;
 
 Cube cube;
+
+// Scale the cube uniformly
+Cube scale(Cube& cube, double factor) {
+    for (size_t i = 0; i < cube.vertices.size(); ++i) {
+        cube.vertices[i] *= factor;
+    }
+
+    std::cout << "Scaling the cube by " << factor << std::endl;
+    //print vertices
+    return cube;
+};
 
 // Handle key press events
 void handleKeypress(unsigned char key, int x, int y) {
@@ -104,10 +105,10 @@ void handleKeypress(unsigned char key, int x, int y) {
             angleY -= 1.0f;
             break;
         case 'f': // Make the cube bigger
-            cube = scale(cube, 1.2); // Increase size by 10%
+            factor -= 0.1; // Increase size by 10%
             break;
         case 'r': // Make the cube smaller
-            cube = scale(cube, 0.8); // Decrease size by 10%
+            factor += 0.1; // Decrease size by 10%
             break;
     }
     glutPostRedisplay(); // Notify GLUT that the display needs to be redrawn
@@ -151,6 +152,12 @@ void displayCube() {
 
     glLoadIdentity();                 // Reseta para a matriz identidade
     glTranslatef(0.0f, 0.0f, -7.0f);  // Move para a tras  da view o que será desenhado
+
+    for (size_t i = 0; i < cube.vertices.size(); ++i) {
+        cube.vertices[i] *= factor;
+    }
+
+
        // Apply rotation around X axis
     rotateX(cube.vertices, angleX);
     // Apply rotation around Y axis

@@ -17,7 +17,7 @@ struct Cube {
     Cube();
 };
 
-Cube scale(Cube cube, double factor);
+Cube scale(Cube& cube, double factor);
 void rotateX(std::vector<double>& vertices, double angle);
 void rotateY(std::vector<double>& vertices, double angle);
 void displayCube();
