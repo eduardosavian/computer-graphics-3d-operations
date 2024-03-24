@@ -74,23 +74,12 @@ GLfloat colors[32][3] = {
 // Global variable to hold the rotation angles
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
-GLfloat factor = 1.2f;
-GLfloat XX = 0.1f;
-GLfloat YY = 0.1f;
-GLfloat ZZ = 0.1f;
+GLfloat factor = 1.0f;
+GLfloat XX = 1.0f;
+GLfloat YY = 1.f;
+GLfloat ZZ = 1.0f;
 
 Cube cube;
-
-// Scale the cube uniformly
-Cube scale(Cube& cube, double factor) {
-    for (size_t i = 0; i < cube.vertices.size(); ++i) {
-        cube.vertices[i] *= factor;
-    }
-
-    std::cout << "Scaling the cube by " << factor << std::endl;
-    //print vertices
-    return cube;
-};
 
 void Left(std::vector<double>& vertices){
     for (size_t i = 0; i < vertices.size(); i += 3) {
@@ -114,16 +103,16 @@ void handleKeypress(unsigned char key, int x, int y) {
             angleY -= 1.0f;
             break;
         case 'f': // Make the cube bigger
-            factor -= 0.1; // Increase size by 10%
+            factor += 0.1; // Increase size by 10%
             break;
         case 'r': // Make the cube smaller
-            factor += 0.1; // Decrease size by 10%
+            factor -= 0.1; // Decrease size by 10%
             break;
         case 'h': // Translate left
             XX -= 0.1f;
             break;
         case 'j': // Translate down
-            ZZ += -0.1f;
+            YY -= 0.1f;
             break;
         case 'k': // Translate up
             YY += 0.1f;
@@ -179,8 +168,7 @@ void displayCube() {
         cube.vertices[i] *= factor;
     }
 
-
-       // Apply rotation around X axis
+    // Apply rotation around X axis
     rotateX(cube.vertices, angleX);
     // Apply rotation around Y axis
     rotateY(cube.vertices, angleY);
@@ -189,6 +177,10 @@ void displayCube() {
         cube.vertices[i] += XX;
         cube.vertices[i + 1] += YY;
         cube.vertices[i + 2] += ZZ;
+    }
+
+    for (size_t i = 0; i < cube.vertices.size(); i += 3) {
+        std::cout << "VerStex " << i / 3 << ": (" << cube.vertices[i] << ", " << cube.vertices[i + 1] << ", " << cube.vertices[i + 2] << ")" << std::endl;
     }
 
     glBegin(GL_LINES);                // Começa a desenhar as linhas do cubo
