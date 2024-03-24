@@ -36,16 +36,14 @@ Cube::Cube() {
 }
 
   // Scale the cube uniformly
-    void Cube::scale(double factor) {
-        for (size_t i = 0; i < vertices.size(); ++i) {
-            vertices[i] *= factor;
+    Cube scale(Cube cube, double factor) {
+        for (size_t i = 0; i < cube.vertices.size(); ++i) {
+            cube.vertices[i] *= factor;
         }
 
         std::cout << "Scaling the cube by " << factor << std::endl;
         //print vertices
-        for (size_t i = 0; i < vertices.size(); i += 3) {
-            std::cout << "Vertex " << i / 3 << ": (" << vertices[i] << ", " << vertices[i + 1] << ", " << vertices[i + 2] << ")" << std::endl;
-        }
+        return cube;
     };
 
 GLfloat colors[32][3] = {
@@ -106,10 +104,10 @@ void handleKeypress(unsigned char key, int x, int y) {
             angleY -= 1.0f;
             break;
         case 'f': // Make the cube bigger
-            cube.scale(10.0); // Increase size by 10%
+            cube = scale(cube, 1.2); // Increase size by 10%
             break;
         case 'r': // Make the cube smaller
-            cube.scale(0.9); // Decrease size by 10%
+            cube = scale(cube, 0.8); // Decrease size by 10%
             break;
     }
     glutPostRedisplay(); // Notify GLUT that the display needs to be redrawn
@@ -152,11 +150,15 @@ void displayCube() {
     glMatrixMode(GL_MODELVIEW);     // Operar na matriz de ModelView
 
     glLoadIdentity();                 // Reseta para a matriz identidade
-    glTranslatef(0.0f, 0.0f, -7.0f);  // Move para a direita da view o que será desenhado
+    glTranslatef(0.0f, 0.0f, -7.0f);  // Move para a tras  da view o que será desenhado
        // Apply rotation around X axis
     rotateX(cube.vertices, angleX);
     // Apply rotation around Y axis
     rotateY(cube.vertices, angleY);
+
+    for (size_t i = 0; i < cube.vertices.size(); i += 3) {
+        std::cout << "Vertex " << i / 3 << ": (" << cube.vertices[i] << ", " << cube.vertices[i + 1] << ", " << cube.vertices[i + 2] << ")" << std::endl;
+    }
 
     glBegin(GL_LINES);                // Começa a desenhar as linhas do cubo
     for (uint i = 0; i < cube.edges.size(); i += 2) {
