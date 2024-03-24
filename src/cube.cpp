@@ -75,6 +75,9 @@ GLfloat colors[32][3] = {
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
 GLfloat factor = 1.2f;
+GLfloat XX = 0.1f;
+GLfloat YY = 0.1f;
+GLfloat ZZ = 0.1f;
 
 Cube cube;
 
@@ -88,6 +91,12 @@ Cube scale(Cube& cube, double factor) {
     //print vertices
     return cube;
 };
+
+void Left(std::vector<double>& vertices){
+    for (size_t i = 0; i < vertices.size(); i += 3) {
+        vertices[i] -= 0.1f;
+    }
+}
 
 // Handle key press events
 void handleKeypress(unsigned char key, int x, int y) {
@@ -110,6 +119,19 @@ void handleKeypress(unsigned char key, int x, int y) {
         case 'r': // Make the cube smaller
             factor += 0.1; // Decrease size by 10%
             break;
+        case 'h': // Translate left
+            XX -= 0.1f;
+            break;
+        case 'j': // Translate down
+            ZZ += -0.1f;
+            break;
+        case 'k': // Translate up
+            YY += 0.1f;
+            break;
+        case 'l': // Translate right
+            XX += 0.1f;
+            break;
+
     }
     glutPostRedisplay(); // Notify GLUT that the display needs to be redrawn
 }
@@ -164,7 +186,9 @@ void displayCube() {
     rotateY(cube.vertices, angleY);
 
     for (size_t i = 0; i < cube.vertices.size(); i += 3) {
-        std::cout << "Vertex " << i / 3 << ": (" << cube.vertices[i] << ", " << cube.vertices[i + 1] << ", " << cube.vertices[i + 2] << ")" << std::endl;
+        cube.vertices[i] += XX;
+        cube.vertices[i + 1] += YY;
+        cube.vertices[i + 2] += ZZ;
     }
 
     glBegin(GL_LINES);                // Começa a desenhar as linhas do cubo
