@@ -6,7 +6,10 @@ PROJECT = cgt
 
 .PHONY: all clean
 
-all: cgt
+all: $(OPATH) $(PROJECT)
+
+$(OPATH):
+	mkdir -p $(OPATH)
 
 cgt: $(OPATH)/main.o $(OPATH)/utils.o $(OPATH)/cube.o
 	$(CC) -o cgt $(OPATH)/main.o $(OPATH)/utils.o $(OPATH)/cube.o $(CFLAGS)
