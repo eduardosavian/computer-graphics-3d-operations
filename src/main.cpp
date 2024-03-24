@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "utils.hpp"
-#include "solid.hpp"
+#include "cube.hpp"
 
 
 int main(int argc, char** argv) {
@@ -9,6 +9,8 @@ int main(int argc, char** argv) {
 
     glutDisplayFunc(cube);
     glutReshapeFunc(reshape);
+	glutKeyboardFunc(handleKeypress); // Register the keyboard callback function
+
 
     initGL();
     glutMainLoop();
