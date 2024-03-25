@@ -81,12 +81,6 @@ GLfloat ZZ = 1.0f;
 
 Cube cube;
 
-void Left(std::vector<double>& vertices){
-    for (size_t i = 0; i < vertices.size(); i += 3) {
-        vertices[i] -= 0.1f;
-    }
-}
-
 // Handle key press events
 void handleKeypress(unsigned char key, int x, int y) {
     switch (key) {
