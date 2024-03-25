@@ -1,4 +1,4 @@
-# cg-test
+# Computer Graphics 2D and 3D Operations
 
 ## Description Desenvolvimento 1.1 - Funções Básicas
 
