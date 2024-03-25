@@ -1,5 +1,7 @@
 # Computer Graphics 2D and 3D Operations
 
+Atividade feita por Eduardo Savian, Marcos Fehlauer, Pablos Marques
+
 ## Description Desenvolvimento 1.1 - Funções Básicas
 
 - O objetivo deste trabalho é observar um pouco do que vimos em 2D e transportar para 3D, com um pouco de pesquisa:
