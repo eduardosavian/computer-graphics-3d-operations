@@ -75,9 +75,9 @@ GLfloat colors[32][3] = {
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
 GLfloat factor = 1.0f;
-GLfloat XX = 1.0f;
-GLfloat YY = 1.f;
-GLfloat ZZ = 1.0f;
+GLfloat XX = 0.0f;
+GLfloat YY = 0.f;
+GLfloat ZZ = -7.0f;
 
 Cube cube;
 
@@ -113,6 +113,12 @@ void handleKeypress(unsigned char key, int x, int y) {
             break;
         case 'l': // Translate right
             XX += 0.1f;
+            break;
+        case 'i': // Translate up
+            ZZ += 0.1f;
+            break;
+        case 'o': // Translate right
+            ZZ -= 0.1f;
             break;
 
     }
@@ -156,7 +162,7 @@ void displayCube() {
     glMatrixMode(GL_MODELVIEW);     // Operar na matriz de ModelView
 
     glLoadIdentity();                 // Reseta para a matriz identidade
-    glTranslatef(0.0f, 0.0f, -7.0f);  // Move para a tras  da view o que será desenhado
+    //glTranslatef(0.0f, 0.0f, -7.0f);  // Move para a tras  da view o que será desenhado
 
     for (size_t i = 0; i < cube.vertices.size(); ++i) {
         cube.vertices[i] *= factor;
