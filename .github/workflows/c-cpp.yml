@@ -20,3 +20,15 @@ jobs:
 
     - name: Build
       run: make
+    - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: v1.0.0  # Update this with your desired tag name
+            release_name: Release v1.0.0  # Update this with your desired release name
+            body: |
+              Describe your release here.
+            draft: false
+            prerelease: false
