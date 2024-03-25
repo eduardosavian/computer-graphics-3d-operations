@@ -15,11 +15,11 @@ struct Cube {
     std::vector<int> edges;
 
     Cube();
+    void rotateX(std::vector<double>& vertices, double angle);
+    void rotateY(std::vector<double>& vertices, double angle);
 };
 
 Cube scale(Cube& cube, double factor);
-void rotateX(std::vector<double>& vertices, double angle);
-void rotateY(std::vector<double>& vertices, double angle);
 void displayCube();
 
 

@@ -127,7 +127,7 @@ void handleKeypress(unsigned char key, int x, int y) {
 
 
 // Rotation around X axis
-void rotateX(std::vector<double>& vertices, double angle) {
+void  Cube::rotateX(std::vector<double>& vertices, double angle) {
     double c = cos(angle * 3.141592653589793 / 180.0);
     double s = sin(angle * 3.141592653589793 / 180.0);
 
@@ -140,7 +140,7 @@ void rotateX(std::vector<double>& vertices, double angle) {
 }
 
 // Rotation around Y axis
-void rotateY(std::vector<double>& vertices, double angle) {
+void Cube::rotateY(std::vector<double>& vertices, double angle) {
     double c = cos(angle * 3.141592653589793 / 180.0);
     double s = sin(angle * 3.141592653589793 / 180.0);
 
@@ -169,9 +169,9 @@ void displayCube() {
     }
 
     // Apply rotation around X axis
-    rotateX(cube.vertices, angleX);
+    cube.rotateX(cube.vertices, angleX);
     // Apply rotation around Y axis
-    rotateY(cube.vertices, angleY);
+    cube.rotateY(cube.vertices, angleY);
 
     for (size_t i = 0; i < cube.vertices.size(); i += 3) {
         cube.vertices[i] += XX;
