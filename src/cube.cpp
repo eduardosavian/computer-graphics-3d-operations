@@ -151,6 +151,7 @@ void  Cube::rotateX(std::vector<double>& vertices, double angle) {
     }
 }
 
+
 // Rotation around Y axis
 void Cube::rotateY(std::vector<double>& vertices, double angle) {
     double c = cos(angle * 3.141592653589793 / 180.0);
@@ -164,7 +165,7 @@ void Cube::rotateY(std::vector<double>& vertices, double angle) {
     }
 }
 
-
+// Rotation around Z axis
 void Cube::rotateZ(std::vector<double>& vertices, double angle) {
     double c = cos(angle * 3.141592653589793 / 180.0);
     double s = sin(angle * 3.141592653589793 / 180.0);
@@ -187,8 +188,7 @@ void displayCube() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Limpa o buffer de cor e o de profundidade
     glMatrixMode(GL_MODELVIEW);     // Operar na matriz de ModelView
 
-    glLoadIdentity();                 // Reseta para a matriz identidade
-    //glTranslatef(0.0f, 0.0f, -7.0f);  // Move para a tras  da view o que será desenhado
+    glLoadIdentity(); // Reseta para a matriz identidade
 
     for (size_t i = 0; i < cube.vertices.size(); ++i) {
         cube.vertices[i] *= factor;
@@ -226,7 +226,6 @@ void displayCube() {
             glVertex3d(x, y, z);
         }
     }
-
 
     glEnd();
     glutSwapBuffers();  // Double Buffer, troca o atual pelo que está aguardando
