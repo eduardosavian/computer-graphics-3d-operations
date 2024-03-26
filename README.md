@@ -20,7 +20,11 @@ Atividade feita por Eduardo Savian, Marcos Fehlauer, Pablos Marques
 
 - O trabalho pode ser feito em até 3 pessoas. A data de entrega do trabalho é segunda dia 26/03/23, apresentação em sala.
 
-## Run
+## Run on Linux
+
+```bash
+<package-manager> install freeglut3-dev
+```
 
 ```bash
 make all
