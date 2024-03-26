@@ -2,7 +2,6 @@
 #define CUBE_HPP
 
 
-
 #include <vector>
 
 #include <GL/freeglut.h>
