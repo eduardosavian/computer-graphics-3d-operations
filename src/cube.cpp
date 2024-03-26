@@ -2,6 +2,11 @@
 #define CUBE_CPP
 
 
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+#include <cmath>
+
 #include "cube.hpp"
 
 
@@ -74,6 +79,7 @@ GLfloat colors[32][3] = {
 // Global variable to hold the rotation angles
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
+GLfloat angleZ = 0.0f;
 GLfloat factor = 1.0f;
 GLfloat XX = 0.0f;
 GLfloat YY = 0.f;
@@ -95,6 +101,12 @@ void handleKeypress(unsigned char key, int x, int y) {
             break;
         case 'd': // Rotate counterclockwise around Y axis when 'd' is pressed
             angleY -= 1.0f;
+            break;
+        case 'z': // Rotate clockwise around Z axis when 'q' is pressed
+            angleZ += 1.0f;
+            break;
+        case 'x': // Rotate counterclockwise around Z axis when 'e' is pressed
+            angleZ -= 1.0f;
             break;
         case 'f': // Make the cube bigger
             factor += 0.1; // Increase size by 10%
@@ -152,6 +164,20 @@ void Cube::rotateY(std::vector<double>& vertices, double angle) {
     }
 }
 
+
+void Cube::rotateZ(std::vector<double>& vertices, double angle) {
+    double c = cos(angle * 3.141592653589793 / 180.0);
+    double s = sin(angle * 3.141592653589793 / 180.0);
+
+    for (size_t i = 0; i < vertices.size(); i += 3) {
+        double x = vertices[i];
+        double y = vertices[i + 1];
+        vertices[i] = x * c - y * s;
+        vertices[i + 1] = x * s + y * c;
+    }
+}
+
+
 // Display the cube
 void displayCube() {
     srand(time(NULL));
@@ -172,6 +198,8 @@ void displayCube() {
     cube.rotateX(cube.vertices, angleX);
     // Apply rotation around Y axis
     cube.rotateY(cube.vertices, angleY);
+    // Apply rotation around Z axis
+    cube.rotateZ(cube.vertices, angleZ);
 
     for (size_t i = 0; i < cube.vertices.size(); i += 3) {
         cube.vertices[i] += XX;
