@@ -11,7 +11,6 @@
 
 
 Cube::Cube() {
-    // Define the 8 vertices of the cube
     vertices = {
         -1.0, -1.0, -1.0,  // Vertex 0
         1.0, -1.0, -1.0,  // Vertex 1

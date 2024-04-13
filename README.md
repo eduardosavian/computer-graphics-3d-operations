@@ -23,6 +23,7 @@ Atividade feita por Eduardo Savian, Marcos Fehlauer, Pablos Marques
 - O trabalho pode ser feito em até 3 pessoas. A data de entrega do trabalho é segunda dia 26/03/23, apresentação em sala.
 
 ### Desenvolvimento 1.2 - Leitura de Arquivos e Iluminação
+
 - O objetivo deste trabalho é aprimorar o trabalho anterior, adicionando mais funcionalidades ao que foi proposto:
 - A função de leitura de arquivo no arquivo de exemplo deve ser expandida, ele deve carregar (além dos vértices e faces) as normais e as texturas.
 - Ao carregar um modelo a forma deve ser carregada como faces, renderizando triângulos e não somente as arestas (wireframe). Os vértices devem levar em conta a posição e a normal para a iluminação.
