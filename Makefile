@@ -11,14 +11,11 @@ all: $(OPATH) $(PROJECT)
 $(OPATH):
 	mkdir -p $(OPATH)
 
-cgt: $(OPATH)/main.o $(OPATH)/utils.o
-	$(CC) -o cgt $(OPATH)/main.o $(OPATH)/utils.o $(CFLAGS)
+cgt: $(OPATH)/main.o
+	$(CC) -o cgt $(OPATH)/main.o $(CFLAGS)
 
-$(OPATH)/main.o: $(CPATH)/main.cpp $(CPATH)/utils.hpp
+$(OPATH)/main.o: $(CPATH)/main.cpp
 	$(CC) -c -o $(OPATH)/main.o $(CPATH)/main.cpp $(CFLAGS)
-
-$(OPATH)/utils.o: $(CPATH)/utils.cpp $(CPATH)/utils.hpp
-	$(CC) -c -o $(OPATH)/utils.o $(CPATH)/utils.cpp $(CFLAGS)
 
 clean:
 	rm -rf $(OPATH)/*.o *~ cgt
