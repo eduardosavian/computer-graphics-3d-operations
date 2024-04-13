@@ -1,4 +1,4 @@
-CC = clang++
+CC = g++
 CFLAGS = -lGL -lGLU -lglut -Wall -Wextra -std=c++20 -O2
 OPATH = objects
 CPATH = src
@@ -11,17 +11,14 @@ all: $(OPATH) $(PROJECT)
 $(OPATH):
 	mkdir -p $(OPATH)
 
-cgt: $(OPATH)/main.o $(OPATH)/utils.o $(OPATH)/cube.o
-	$(CC) -o cgt $(OPATH)/main.o $(OPATH)/utils.o $(OPATH)/cube.o $(CFLAGS)
+cgt: $(OPATH)/main.o $(OPATH)/utils.o
+	$(CC) -o cgt $(OPATH)/main.o $(OPATH)/utils.o $(CFLAGS)
 
-$(OPATH)/main.o: $(CPATH)/main.cpp $(CPATH)/utils.hpp $(CPATH)/cube.hpp
+$(OPATH)/main.o: $(CPATH)/main.cpp $(CPATH)/utils.hpp
 	$(CC) -c -o $(OPATH)/main.o $(CPATH)/main.cpp $(CFLAGS)
 
 $(OPATH)/utils.o: $(CPATH)/utils.cpp $(CPATH)/utils.hpp
 	$(CC) -c -o $(OPATH)/utils.o $(CPATH)/utils.cpp $(CFLAGS)
-
-$(OPATH)/cube.o: $(CPATH)/cube.cpp $(CPATH)/cube.hpp
-	$(CC) -c -o $(OPATH)/cube.o $(CPATH)/cube.cpp $(CFLAGS)
 
 clean:
 	rm -rf $(OPATH)/*.o *~ cgt
