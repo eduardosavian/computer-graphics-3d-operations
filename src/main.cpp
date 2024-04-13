@@ -63,7 +63,7 @@ void loadObj(string fname)
     {
         glPushMatrix();
         glBegin(GL_LINES);
-        
+
         for(int i = 0; i < faces.size(); i++)
         {
             vector<int> face = faces[i];
@@ -76,7 +76,7 @@ void loadObj(string fname)
 
             glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
             glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
-            
+
         }
         glEnd();
 
