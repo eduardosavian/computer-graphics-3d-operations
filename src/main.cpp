@@ -13,12 +13,7 @@ vector<vector<float>> normals;
 vector<vector<float>> textures;
 vector<vector<int>> texture_faces;
 vector<vector<int>> normal_faces;
-
 float rot_ele;
-float cameraPosX = 0.0f;
-float cameraPosY = 0.0f;
-float cameraPosZ = 150.0f;
-
 
 void loadObj(string fname)
 {
@@ -81,41 +76,30 @@ void loadObj(string fname)
     }
 
     elephant = glGenLists(1);
+    glPointSize(2.0);
     glNewList(elephant, GL_COMPILE);
     {
-        glBegin(GL_TRIANGLES);
+        glPushMatrix();
+        glBegin(GL_LINES);
 
         for(int i = 0; i < faces.size(); i++)
         {
             vector<int> face = faces[i];
-            vector<int> texture_face = texture_faces[i];
-            vector<int> normal_face = normal_faces[i];
 
-            for (int j = 0; j < 3; j++)
-            {
-                // Set normal
-                if (normal_face[j] >= 0)
-                {
-                    glNormal3f(normals[normal_face[j]][0], normals[normal_face[j]][1], normals[normal_face[j]][2]);
-                }
+            glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
+            glVertex3f(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
 
-                // Set texture coordinate
-                if (texture_face[j] >= 0)
-                {
-                    glTexCoord2f(textures[texture_face[j]][0], textures[texture_face[j]][1]);
-                }
+            glVertex3f(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
+            glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
 
-                // Set vertex
-                glVertex3f(vertices[face[j]][0], vertices[face[j]][1], vertices[face[j]][2]);
-            }
+            glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
+            glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
         }
-
         glEnd();
     }
+    glPopMatrix();
     glEndList();
-
     file.close();
-
 }
 
 void reshape(int w, int h)
