@@ -19,8 +19,8 @@ float rot_ele = 0.0;
 float rot_ele_x = 0.0;
 float rot_ele_y = 0.0;
 float rot_ele_z = 0.0;
-float trans_x = 0.0, trans_y = -40.0, trans_z = -105.0;
-float scale_factor = 1.0;
+float trans_x = 0.0, trans_y = -40.0, trans_z = -205.0;
+float scale_factor = 0.7;
 
 
 void keyboard(unsigned char key, int x, int y) {
@@ -73,8 +73,6 @@ void keyboard(unsigned char key, int x, int y) {
     }
     glutPostRedisplay(); // Redraw scene
 }
-
-
 
 void loadObj(string fname)
 {
@@ -136,42 +134,46 @@ void loadObj(string fname)
         }
     }
 
-    elephant = glGenLists(1);
-    glPointSize(2.0);
-    glNewList(elephant, GL_COMPILE);
-    {
-        glPushMatrix();
-        glBegin(GL_TRIANGLES);
-
-        for(int i = 0; i < faces.size(); i++)
-        {
-            vector<int> face = faces[i];
-            vector<int> texture_face = texture_faces[i];
-
-            for (int j = 0; j < 3; j++)
-            {
-                int vertex_index = face[j];
-                int texture_index = texture_face[j];
-
-                if (texture_index >= 0 && texture_index < textures.size())
-                {
-                    float u = textures[texture_index][0];
-                    float v = textures[texture_index][1];
-                    glTexCoord2f(u, v);
-                }
-
-                if (vertex_index >= 0 && vertex_index < vertices.size())
-                {
-                    glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
-                }
-            }
-        }
-        glEnd();
-    }
-    glPopMatrix();
-    glEndList();
     file.close();
 }
+
+void createElephantDisplayList()
+{
+    elephant = glGenLists(1); // Generate a new display list ID
+    glNewList(elephant, GL_COMPILE); // Begin compiling the display list
+    glPushMatrix(); // Push the current matrix onto the stack
+
+    glBegin(GL_TRIANGLES); // Begin drawing triangles
+    for (int i = 0; i < faces.size(); i++)
+    {
+        vector<int> face = faces[i];
+        vector<int> texture_face = texture_faces[i];
+
+        for (int j = 0; j < 3; j++)
+        {
+            int vertex_index = face[j];
+            int texture_index = texture_face[j];
+
+            if (texture_index >= 0 && texture_index < textures.size())
+            {
+                float u = textures[texture_index][0];
+                float v = textures[texture_index][1];
+                glTexCoord2f(u, v);
+            }
+
+            if (vertex_index >= 0 && vertex_index < vertices.size())
+            {
+                glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
+            }
+        }
+    }
+    glEnd(); // End drawing triangles
+
+    glPopMatrix(); // Restore the previous matrix
+    glEndList(); // End compiling the display list
+}
+
+
 
 void reshape(int w, int h)
 {
@@ -236,6 +238,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutTimerFunc(10, timer, 0);
     loadObj(argv[1]);
+    createElephantDisplayList();
 
     glutKeyboardFunc(keyboard);
 
