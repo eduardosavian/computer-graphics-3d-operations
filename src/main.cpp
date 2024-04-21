@@ -6,27 +6,26 @@
 using namespace std;
 
 //globals
-
 unsigned int elefante;
 vector<vector<float>> vertices;
 vector<vector<int>> faces;
 float rot_ele;
-
 
 void loadObj(string fname)
 {
     int read;
     float x, y, z;
     ifstream arquivo(fname);
-    if (!arquivo.is_open()) {
+    if (!arquivo.is_open())
+    {
         cout << "arquivo nao encontrado";
         exit(1);
     }
-    else {
+    else 
+    {
         string tipo;
         while (arquivo >> tipo)
         {
-
             if (tipo == "v")
             {
                 vector<float> vertice;
@@ -54,9 +53,6 @@ void loadObj(string fname)
         }
     }
 
-
-
-
     elefante = glGenLists(1);
     glPointSize(2.0);
     glNewList(elefante, GL_COMPILE);
@@ -76,17 +72,13 @@ void loadObj(string fname)
 
             glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
             glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
-
         }
         glEnd();
-
     }
     glPopMatrix();
     glEndList();
     arquivo.close();
-
 }
-
 
 void reshape(int w, int h)
 {
@@ -97,6 +89,7 @@ void reshape(int w, int h)
 
     glMatrixMode(GL_MODELVIEW);
 }
+
 void drawElephant()
 {
     glPushMatrix();
@@ -109,6 +102,7 @@ void drawElephant()
     rot_ele = rot_ele + 0.6;
     if (rot_ele > 360) rot_ele = rot_ele - 360;
 }
+
 void display(void)
 {
     glClearColor(0.0, 0.0, 0.0, 1.0);
