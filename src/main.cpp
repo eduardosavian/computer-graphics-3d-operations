@@ -5,8 +5,7 @@
 #include <string>
 using namespace std;
 
-//globals
-
+// Globals
 unsigned int object;
 vector<vector<float>> vertices;
 vector<vector<int>> faces;
@@ -17,32 +16,52 @@ vector<vector<int>> normal_faces;
 
 float rotation_angle = 0.0;
 float rotation_angle_x = 0.0;
-float rotation_angle_y = 45.0;
+float rotation_angle_y = 0.0;
 float rotation_angle_z = 0.0;
-//float translation_x = 0.0, translation_y = .0, translation_z = .0;
-//float scale_factor = 1.0;
-float translation_x = 0.0, translation_y = -300.0, translation_z = -800.0;
+float translation_x = 0.0, translation_y = 0, translation_z = -800.0;
 float scale_factor = 1.0;
+float light_position_x = 0.0;
+float light_position_y = 0.0;
+float light_position_z = 0.0;
 
-
-void initLights() {
+void initAmbientLight() {
+    glDisable(GL_LIGHT0);
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
-    // Configure the ambient, diffuse, and specular components of the light
-    GLfloat light0_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-    GLfloat light0_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
-    GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-
+    // Configure the ambient component of the light
+    GLfloat light0_ambient[] = { 0.2, 0.2, 0.2, 1.0 }; // Ambient light color (gray)
     glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light0_specular);
 
     // Set the position of the light
-    GLfloat light0_position[] = { -0.5, 0.5, 0.0, 1.0 };
+    GLfloat light0_position[] = { light_position_x, light_position_y, light_position_z, 1.0 }; // Light position
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-    // Define material properties
+
+        GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
+    GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
+    GLfloat shininess = 30.0; // Define shininess coefficient
+
+    // Set material properties for the object
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, color_1); // Set ambient and diffuse color
+    glMaterialfv(GL_FRONT, GL_SPECULAR, color_2); // Set specular color
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess); // Set shininess coefficient
+}
+
+void initDiffuseLight() {
+    glDisable(GL_LIGHT0);
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    // Configure the diffuse component of the light
+    GLfloat light0_diffuse[] = { 0.5, 0.5, 0.5, 1.0 }; // Diffuse light color (gray)
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
+
+    // Set the position of the light
+    GLfloat light0_position[] = { light_position_x, light_position_y, light_position_z, 1.0 }; // Light position
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+
     GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
     GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
     GLfloat shininess = 30.0; // Define shininess coefficient
@@ -51,6 +70,31 @@ void initLights() {
     glMaterialfv(GL_FRONT, GL_DIFFUSE, color_1); // Set ambient and diffuse color
     glMaterialfv(GL_FRONT, GL_SPECULAR, color_2); // Set specular color
     glMaterialf(GL_FRONT, GL_SHININESS, shininess); // Set shininess coefficient
+}
+
+void initSpecularLight() {
+    glDisable(GL_LIGHT0);
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    // Configure the specular component of the light
+    GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 }; // Specular light color (white)
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light0_specular);
+
+    // Set the position of the light
+    GLfloat light0_position[] = { light_position_x, light_position_y, light_position_z, 1.0 }; // Light position
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+
+    GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
+    GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
+    GLfloat shininess = 30.0; // Define shininess coefficient
+
+    // Set material properties for the object
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, color_1); // Set ambient and diffuse color
+    glMaterialfv(GL_FRONT, GL_SPECULAR, color_2); // Set specular color
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess); // Set shininess coefficient
+    // Define material properties...
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -111,10 +155,65 @@ void keyboard(unsigned char key, int x, int y) {
             scale_factor -= 0.1;
             cout << "Scale down" << endl;
             break;
+        case '1': // Initialize ambient light
+            initAmbientLight();
+            cout << "Ambient light enabled" << endl;
+            break;
+        case '2': // Initialize diffuse light
+            initDiffuseLight();
+            cout << "Diffuse light enabled" << endl;
+            break;
+        case '3': // Initialize specular light
+            initSpecularLight();
+            cout << "Specular light enabled" << endl;
+            break;
+        case 'z': // Move light source up
+            light_position_y += 0.1;
+            cout << "Move light source up" << endl;
+            break;
+        case 'x': // Move light source down
+            light_position_y -= 0.1;
+            cout << "Move light source down" << endl;
+            break;
+        case 'c': // Move light source left
+            light_position_x -= 0.1;
+            cout << "Move light source left" << endl;
+            break;
+        case 'v': // Move light source right
+            light_position_x += 0.1;
+            cout << "Move light source right" << endl;
+            break;
+        case 'b': // Move light source closer
+            light_position_z += 0.1;
+            cout << "Move light source closer" << endl;
+            break;
+        case 'n': // Move light source farther
+            light_position_z -= 0.1;
+            cout << "Move light source farther" << endl;
+            break;
+        case '9': // Move light source farther
+            light_position_x = 0.0;
+            light_position_y = 0.0;
+            light_position_z = 0.0;
+            cout << "Reset light" << endl;
+            break;
+        case '0': // Move light source farther
+            light_position_z -= 0.1;
+            rotation_angle_x = 0.0;
+            rotation_angle_y = 45.0;
+            rotation_angle_z = 0.0;
+            translation_x = 0.0, translation_y = -300.0, translation_z = -800.0;
+            scale_factor = 1.0;
+            cout << "Resert figure" << endl;
+            break;
         case 27: // ESC key to exit
             exit(0);
             break;
     }
+    cout << "Object Position: (" << translation_x << ", " << translation_y << ", " << translation_z << ")" << endl;
+
+    cout << "Light Source Position: (" << light_position_x << ", " << light_position_y << ", " << light_position_z << ")" << endl;
+
     glutPostRedisplay(); // Redraw scene
 }
 
@@ -135,7 +234,7 @@ void drawBackground() {
 void loadObj(const string& fname) {
     ifstream file(fname);
     if (!file.is_open()) {
-        cout << "arquivo nao encontrado";
+        cout << "File not found";
         exit(1);
     } else {
         string type;
@@ -211,8 +310,6 @@ void renderObj() {
     glEndList();
 }
 
-
-
 void reshape(int w, int h)
 {
     glViewport(0, 0, w, h);
@@ -264,14 +361,13 @@ int main(int argc, char** argv)
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(800, 800);
     glutInitWindowPosition(20, 20);
-    glutCreateWindow("Carregar OBJ");
+    glutCreateWindow("Load OBJ");
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
     glutTimerFunc(10, timer, 0);
     loadObj(argv[1]);
     renderObj();
     glutKeyboardFunc(keyboard);
-    initLights();
 
     glutMainLoop();
     return 0;
