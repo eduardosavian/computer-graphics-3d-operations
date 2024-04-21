@@ -32,7 +32,7 @@ void initLights() {
 
     // Configure the ambient, diffuse, and specular components of the light
     GLfloat light0_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-    GLfloat light0_diffuse[] = { 0.8, 0/8, 0.8, 1.0 };
+    GLfloat light0_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
     GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
@@ -40,7 +40,7 @@ void initLights() {
     glLightfv(GL_LIGHT0, GL_SPECULAR, light0_specular);
 
     // Set the position of the light
-    GLfloat light0_position[] = { -50.0, 50.0, -50.0, 1.0 };
+    GLfloat light0_position[] = { -0.5, 0.5, 0.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
     // Define material properties
     GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
@@ -132,78 +132,27 @@ void drawBackground() {
     glPopMatrix();
 }
 
-void drawNormals() {
-    glColor3f(1.0, 1.0, 0.0); // Yellow color for normals
-    glLineWidth(2.0); // Set line width for normals
-
-    for (size_t i = 0; i < vertices.size(); i++) {
-        float x = vertices[i][0];
-        float y = vertices[i][1];
-        float z = vertices[i][2];
-
-        float nx = normals[i][0];
-        float ny = normals[i][1];
-        float nz = normals[i][2];
-
-        // Apply the same transformations to normals as the object
-        glPushMatrix();
-        glTranslatef(translation_x, translation_y, translation_z);
-        glRotatef(rotation_angle, 0, 1, 0);
-        glRotatef(rotation_angle_x, 1, 0, 0);
-        glRotatef(rotation_angle_y, 0, 1, 0);
-        glRotatef(rotation_angle_z, 0, 0, 1);
-        glScalef(scale_factor, scale_factor, scale_factor);
-
-        // Draw a line representing the normal at the vertex
-        glBegin(GL_LINES);
-        glVertex3f(x, y, z);
-        glVertex3f(x + nx * 10, y + ny * 10, z + nz * 10); // Scale normal for visibility
-        glEnd();
-
-        glPopMatrix();
-    }
-}
-
-
-
-
-void loadObj(string fname)
-{
-    int read;
-    float x, y, z;
+void loadObj(const string& fname) {
     ifstream file(fname);
     if (!file.is_open()) {
         cout << "arquivo nao encontrado";
         exit(1);
-    }
-    else {
+    } else {
         string type;
-        while (file >> type)
-        {
-
-            if (type == "v")
-            {
+        while (file >> type) {
+            if (type == "v") {
                 float x, y, z;
                 file >> x >> y >> z;
                 vertices.push_back({x, y, z});
-            }
-
-            if (type == "vn")
-            {
+            } else if (type == "vn") {
                 float nx, ny, nz;
                 file >> nx >> ny >> nz;
                 normals.push_back({nx, ny, nz});
-            }
-
-            if (type == "vt")
-            {
+            } else if (type == "vt") {
                 float u, v;
                 file >> u >> v;
                 textures.push_back({u, v});
-            }
-
-            if (type == "f")
-            {
+            } else if (type == "f") {
                 string v1, v2, v3;
                 file >> v1 >> v2 >> v3;
 
@@ -225,8 +174,10 @@ void loadObj(string fname)
             }
         }
     }
+    file.close();
+}
 
-
+void renderObj() {
     object = glGenLists(1);
     glPointSize(2.0);
     glNewList(object, GL_COMPILE);
@@ -234,37 +185,33 @@ void loadObj(string fname)
         glPushMatrix();
         glBegin(GL_TRIANGLES);
 
-        for(int i = 0; i < faces.size(); i++)
-        {
+        for (uint i = 0; i < faces.size(); i++) {
             vector<int> face = faces[i];
-            vector<int> texture_face = texture_faces[i];
+            vector<int> normal_face = normal_faces[i]; // Fetch normal indices
 
-            for (int j = 0; j < 3; j++)
-        {
-            int vertex_index = face[j];
-            int texture_index = texture_face[j];
+            for (int j = 0; j < 3; j++) {
+                int vertex_index = face[j];
+                int normal_index = normal_face[j]; // Fetch normal index
 
-            if (texture_index >= 0 && texture_index < textures.size())
-            {
-                float u = textures[texture_index][0];
-                float v = textures[texture_index][1];
-                glTexCoord2f(u, v);
+                if (normal_index >= 0 && normal_index < normals.size()) {
+                    float nx = normals[normal_index][0];
+                    float ny = normals[normal_index][1];
+                    float nz = normals[normal_index][2];
+                    glNormal3f(nx, ny, nz); // Specify normal for the vertex
+                }
+
+                if (vertex_index >= 0 && vertex_index < vertices.size()) {
+                    glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
+                }
             }
-
-            if (vertex_index >= 0 && vertex_index < vertices.size())
-            {
-                glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
-            }
-        }
         }
         glEnd();
-
     }
     glPopMatrix();
     glEndList();
-    file.close();
-
 }
+
+
 
 void reshape(int w, int h)
 {
@@ -289,14 +236,13 @@ void drawObject()
     glCallList(object);
     glPopMatrix();
 }
+
 void display(void)
 {
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    drawNormals();
-    //drawBackground();
     drawObject();
 
     glutSwapBuffers();
@@ -323,6 +269,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutTimerFunc(10, timer, 0);
     loadObj(argv[1]);
+    renderObj();
     glutKeyboardFunc(keyboard);
     initLights();
 
