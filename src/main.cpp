@@ -21,7 +21,7 @@ void loadObj(string fname)
         cout << "arquivo nao encontrado";
         exit(1);
     }
-    else 
+    else
     {
         string tipo;
         while (arquivo >> tipo)
@@ -119,6 +119,12 @@ void timer(int value) {
 
 int main(int argc, char** argv)
 {
+    if(argc != 2)
+    {
+        cout << "Usage: " << argv[0] << " <obj_file_name>" << endl;
+        return 1;
+    }
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(800, 450);
@@ -127,7 +133,8 @@ int main(int argc, char** argv)
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
     glutTimerFunc(10, timer, 0);
-    loadObj("data/mba1.obj");
+    loadObj(argv[1]);
+
     glutMainLoop();
     return 0;
 }
