@@ -29,6 +29,7 @@ GLfloat light1_position[] = { 50.0, 50.0, -50.0, 1.0 };
 GLfloat light2_position[] = { 0.0, -50.0, 0.0, 1.0 };
 
 void initLights() {
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
@@ -45,16 +46,6 @@ void initLights() {
     GLfloat light0_position[] = { -50.0, 50.0, -50.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
 }
-
-void toggleLights() {
-    for (int i = 0; i < 3; ++i) {
-        if (lights[i])
-            glEnable(GL_LIGHT0 + i);
-        else
-            glDisable(GL_LIGHT0 + i);
-    }
-}
-
 
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
@@ -102,18 +93,6 @@ void keyboard(unsigned char key, int x, int y) {
             break;
         case 27: // ESC key to exit
             exit(0);
-            break;
-        case '1': // Ativar/desativar luz 1
-            lights[0] = !lights[0];
-            toggleLights();
-            break;
-        case '2': // Ativar/desativar luz 2
-            lights[1] = !lights[1];
-            toggleLights();
-            break;
-        case '3': // Ativar/desativar luz 3
-            lights[2] = !lights[2];
-            toggleLights();
             break;
     }
     glutPostRedisplay(); // Redraw scene
@@ -252,28 +231,10 @@ void drawElephant()
 
 void display(void)
 {
-    // Set background color to pink
     glClearColor(1.0, 0.75, 0.8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-
-    // Enable lighting
-    glEnable(GL_LIGHTING);
-
-    // Configure light 0 as a directional light
-    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-    GLfloat light0_direction[] = { 0.0, -1.0, 0.0, 0.0 }; // Directional light pointing downwards
-    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light0_direction);
-    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180.0); // Set cutoff angle to 180 degrees for directional light
-
-    // Set light colors
-    GLfloat light0_diffuse[] = { 1.0, 0.0, 0.0, 1.0 }; // Red color for light 0 (directional)
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
-
-    // Draw the elephant
     drawElephant();
-
-    // Swap buffers
     glutSwapBuffers();
 }
 
@@ -304,7 +265,7 @@ int main(int argc, char** argv)
     createElephantDisplayList();
 
     glutKeyboardFunc(keyboard);
-    initLights(); // Inicializa as luzes
+    initLights();
 
 
     glutMainLoop();
