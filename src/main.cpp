@@ -10,6 +10,12 @@ using namespace std;
 unsigned int elefante;
 vector<vector<float>> vertices;
 vector<vector<int>> faces;
+vector<vector<float>> normals;
+vector<vector<float>> textures;
+
+vector<vector<int>> texture_faces;
+vector<vector<int>> normal_faces;
+
 float rot_ele;
 
 float rotation_angle = 0.0;
@@ -20,6 +26,8 @@ float rotation_angle_z = 0.0;
 //float scale_factor = 1.0;
 float translation_x = 0.0, translation_y = -300.0, translation_z = -800.0;
 float scale_factor = 1.0;
+
+
 
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
@@ -86,45 +94,72 @@ void keyboard(unsigned char key, int x, int y) {
     glutPostRedisplay(); // Redraw scene
 }
 
-
-
 void loadObj(string fname)
 {
     int read;
     float x, y, z;
-    ifstream arquivo(fname);
-    if (!arquivo.is_open()) {
+    ifstream file(fname);
+    if (!file.is_open()) {
         cout << "arquivo nao encontrado";
         exit(1);
     }
     else {
-        string tipo;
-        while (arquivo >> tipo)
+        string type;
+        while (file >> type)
         {
 
-            if (tipo == "v")
+            if (type == "v")
             {
-                vector<float> vertice;
                 float x, y, z;
-                arquivo >> x >> y >> z;
-                vertice.push_back(x);
-                vertice.push_back(y);
-                vertice.push_back(z);
-                vertices.push_back(vertice);
+                file >> x >> y >> z;
+                vertices.push_back({x, y, z});
             }
 
-            if (tipo == "f")
+            if (type == "vn")
             {
-                vector<int> face;
-                string x, y, z;
-                arquivo >> x >> y >> z;
-                int fp = stoi(x.substr(0, x.find("/"))) - 1;
-                int fs = stoi(y.substr(0, y.find("/"))) - 1;
-                int ft = stoi(z.substr(0, z.find("/"))) - 1;
-                face.push_back(fp);
-                face.push_back(fs);
-                face.push_back(ft);
-                faces.push_back(face);
+                float nx, ny, nz;
+                file >> nx >> ny >> nz;
+                normals.push_back({nx, ny, nz});
+            }
+
+            if (type == "vt")
+            {
+                float u, v;
+                file >> u >> v;
+                textures.push_back({u, v});
+            }
+
+            if (type == "f")
+            {
+                string v1, v2, v3;
+                file >> v1 >> v2 >> v3;
+
+                int v1p, v1t, v1n;
+                int v2p, v2t, v2n;
+                int v3p, v3t, v3n;
+
+                sscanf(v1.c_str(), "%d/%d/%d", &v1p, &v1t, &v1n);
+                sscanf(v2.c_str(), "%d/%d/%d", &v2p, &v2t, &v2n);
+                sscanf(v3.c_str(), "%d/%d/%d", &v3p, &v3t, &v3n);
+
+                v1p--; v1t--; v1n--;
+                v2p--; v2t--; v2n--;
+                v3p--; v3t--; v3n--;
+
+                faces.push_back({v1p, v2p, v3p});
+                texture_faces.push_back({v1t, v2t, v3t});
+                normal_faces.push_back({v1n, v2n, v3n});
+
+                // vector<int> face;
+                // string x, y, z;
+                // file >> x >> y >> z;
+                // int fp = stoi(x.substr(0, x.find("/"))) - 1;
+                // int fs = stoi(y.substr(0, y.find("/"))) - 1;
+                // int ft = stoi(z.substr(0, z.find("/"))) - 1;
+                // face.push_back(fp);
+                // face.push_back(fs);
+                // face.push_back(ft);
+                // faces.push_back(face);
             }
         }
     }
@@ -135,20 +170,39 @@ void loadObj(string fname)
     glNewList(elefante, GL_COMPILE);
     {
         glPushMatrix();
-        glBegin(GL_LINES);
+        glBegin(GL_TRIANGLES);
 
         for(int i = 0; i < faces.size(); i++)
         {
             vector<int> face = faces[i];
+            vector<int> texture_face = texture_faces[i];
 
-            glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
-            glVertex3f(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
+            for (int j = 0; j < 3; j++)
+        {
+            int vertex_index = face[j];
+            int texture_index = texture_face[j];
 
-            glVertex3f(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
-            glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
+            if (texture_index >= 0 && texture_index < textures.size())
+            {
+                float u = textures[texture_index][0];
+                float v = textures[texture_index][1];
+                glTexCoord2f(u, v);
+            }
 
-            glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
-            glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
+            if (vertex_index >= 0 && vertex_index < vertices.size())
+            {
+                glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
+            }
+        }
+
+            // glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
+            // glVertex3f(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
+
+            // glVertex3f(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
+            // glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
+
+            // glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
+            // glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
 
         }
         glEnd();
@@ -156,10 +210,9 @@ void loadObj(string fname)
     }
     glPopMatrix();
     glEndList();
-    arquivo.close();
+    file.close();
 
 }
-
 
 void reshape(int w, int h)
 {
