@@ -5,6 +5,7 @@
 #include <string>
 using namespace std;
 
+
 // globals
 unsigned int elephant;
 vector<vector<float>> vertices;
@@ -13,7 +14,67 @@ vector<vector<float>> normals;
 vector<vector<float>> textures;
 vector<vector<int>> texture_faces;
 vector<vector<int>> normal_faces;
-float rot_ele;
+
+float rot_ele = 0.0;
+float rot_ele_x = 0.0;
+float rot_ele_y = 0.0;
+float rot_ele_z = 0.0;
+float trans_x = 0.0, trans_y = -40.0, trans_z = -105.0;
+float scale_factor = 1.0;
+
+
+void keyboard(unsigned char key, int x, int y) {
+    switch(key) {
+        case 'w': // Move object up
+            trans_y += 1.0;
+            break;
+        case 's': // Move object down
+            trans_y -= 1.0;
+            break;
+        case 'a': // Move object left
+            trans_x -= 1.0;
+            break;
+        case 'd': // Move object right
+            trans_x += 1.0;
+            break;
+        case 'q': // Move object closer
+            trans_z += 1.0;
+            break;
+        case 'e': // Move object farther
+            trans_z -= 1.0;
+            break;
+        case 'i': // Rotate object up (around x-axis)
+            rot_ele_x += 1.0;
+            break;
+        case 'k': // Rotate object down (around x-axis)
+            rot_ele_x -= 1.0;
+            break;
+        case 'j': // Rotate object left (around y-axis)
+            rot_ele_y -= 1.0;
+            break;
+        case 'l': // Rotate object right (around y-axis)
+            rot_ele_y += 1.0;
+            break;
+        case 'u': // Rotate object clockwise (around z-axis)
+            rot_ele_z += 1.0;
+            break;
+        case 'o': // Rotate object counterclockwise (around z-axis)
+            rot_ele_z -= 1.0;
+            break;
+        case '+': // Scale up
+            scale_factor += 0.1;
+            break;
+        case '-': // Scale down
+            scale_factor -= 0.1;
+            break;
+        case 27: // ESC key to exit
+            exit(0);
+            break;
+    }
+    glutPostRedisplay(); // Redraw scene
+}
+
+
 
 void loadObj(string fname)
 {
@@ -85,14 +146,13 @@ void loadObj(string fname)
         for(int i = 0; i < faces.size(); i++)
         {
             vector<int> face = faces[i];
-            vector<int> texture_face = texture_faces[i]; // Texture indices for the current face
+            vector<int> texture_face = texture_faces[i];
 
-            for (int j = 0; j < 3; j++) // Each face has 3 vertices
+            for (int j = 0; j < 3; j++)
             {
                 int vertex_index = face[j];
-                int texture_index = texture_face[j]; // Texture index for the current vertex
+                int texture_index = texture_face[j];
 
-                // Set texture coordinates
                 if (texture_index >= 0 && texture_index < textures.size())
                 {
                     float u = textures[texture_index][0];
@@ -100,7 +160,6 @@ void loadObj(string fname)
                     glTexCoord2f(u, v);
                 }
 
-                // Set vertex coordinates
                 if (vertex_index >= 0 && vertex_index < vertices.size())
                 {
                     glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
@@ -127,14 +186,23 @@ void reshape(int w, int h)
 void drawElephant()
 {
     glPushMatrix();
-    glTranslatef(0, -40.00, -105);
-    glColor3f(1.0, 0.23, 0.27);
-    glScalef(0.4, 0.4, 0.4);
+
+
+    glTranslatef(trans_x, trans_y, trans_z);
+
+
     glRotatef(rot_ele, 0, 1, 0);
+    glRotatef(rot_ele_x, 1, 0, 0);
+    glRotatef(rot_ele_y, 0, 1, 0);
+    glRotatef(rot_ele_z, 0, 0, 1);
+
+    glColor3f(1.0, 0.23, 0.27);
+    glScalef(scale_factor, scale_factor, scale_factor);
+
+
     glCallList(elephant);
+
     glPopMatrix();
-    rot_ele = rot_ele + 0.6;
-    if (rot_ele > 360) rot_ele = rot_ele - 360;
 }
 
 void display(void)
@@ -168,6 +236,8 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutTimerFunc(10, timer, 0);
     loadObj(argv[1]);
+
+    glutKeyboardFunc(keyboard);
 
     glutMainLoop();
     return 0;
