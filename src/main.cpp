@@ -118,6 +118,55 @@ void keyboard(unsigned char key, int x, int y) {
     glutPostRedisplay(); // Redraw scene
 }
 
+void drawBackground() {
+    glPushMatrix();
+    glLoadIdentity();
+    glDisable(GL_LIGHTING); // Disable lighting for the background
+    glBegin(GL_QUADS);
+    glColor3f(1.0, 0.5, 1.0);
+    glVertex3f(-1.0, -1.0, -1.0);
+    glVertex3f(1.0, -1.0, -1.0);
+    glVertex3f(1.0, 1.0, -1.0);
+    glVertex3f(-1.0, 1.0, -1.0);
+    glEnd();
+    glPopMatrix();
+}
+
+void drawNormals() {
+    glColor3f(1.0, 1.0, 0.0); // Yellow color for normals
+    glLineWidth(2.0); // Set line width for normals
+
+    for (size_t i = 0; i < vertices.size(); i++) {
+        float x = vertices[i][0];
+        float y = vertices[i][1];
+        float z = vertices[i][2];
+
+        float nx = normals[i][0];
+        float ny = normals[i][1];
+        float nz = normals[i][2];
+
+        // Apply the same transformations to normals as the object
+        glPushMatrix();
+        glTranslatef(translation_x, translation_y, translation_z);
+        glRotatef(rotation_angle, 0, 1, 0);
+        glRotatef(rotation_angle_x, 1, 0, 0);
+        glRotatef(rotation_angle_y, 0, 1, 0);
+        glRotatef(rotation_angle_z, 0, 0, 1);
+        glScalef(scale_factor, scale_factor, scale_factor);
+
+        // Draw a line representing the normal at the vertex
+        glBegin(GL_LINES);
+        glVertex3f(x, y, z);
+        glVertex3f(x + nx * 10, y + ny * 10, z + nz * 10); // Scale normal for visibility
+        glEnd();
+
+        glPopMatrix();
+    }
+}
+
+
+
+
 void loadObj(string fname)
 {
     int read;
@@ -173,21 +222,10 @@ void loadObj(string fname)
                 faces.push_back({v1p, v2p, v3p});
                 texture_faces.push_back({v1t, v2t, v3t});
                 normal_faces.push_back({v1n, v2n, v3n});
-
-                // vector<int> face;
-                // string x, y, z;
-                // file >> x >> y >> z;
-                // int fp = stoi(x.substr(0, x.find("/"))) - 1;
-                // int fs = stoi(y.substr(0, y.find("/"))) - 1;
-                // int ft = stoi(z.substr(0, z.find("/"))) - 1;
-                // face.push_back(fp);
-                // face.push_back(fs);
-                // face.push_back(ft);
-                // faces.push_back(face);
             }
         }
     }
-    
+
 
     object = glGenLists(1);
     glPointSize(2.0);
@@ -218,16 +256,6 @@ void loadObj(string fname)
                 glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
             }
         }
-
-            // glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
-            // glVertex3f(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
-
-            // glVertex3f(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
-            // glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
-
-            // glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
-            // glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
-
         }
         glEnd();
 
@@ -266,7 +294,11 @@ void display(void)
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
+    drawNormals();
+    //drawBackground();
     drawObject();
+
     glutSwapBuffers();
 }
 
