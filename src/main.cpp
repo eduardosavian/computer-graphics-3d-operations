@@ -5,9 +5,7 @@
 #include <string>
 using namespace std;
 
-
-// globals
-unsigned int elephant;
+unsigned int object;
 vector<vector<float>> vertices;
 vector<vector<int>> faces;
 vector<vector<float>> normals;
@@ -15,18 +13,77 @@ vector<vector<float>> textures;
 vector<vector<int>> texture_faces;
 vector<vector<int>> normal_faces;
 
-float rot_ele = 0.0;
-float rot_ele_x = 0.0;
-float rot_ele_y = 0.0;
-float rot_ele_z = 0.0;
-float trans_x = 0.0, trans_y = -40.0, trans_z = -205.0;
+float rotation_angle = 0.0;
+float rotation_angle_x = 0.0;
+float rotation_angle_y = 0.0;
+float rotation_angle_z = 0.0;
+float translation_x = 0.0, translation_y = -40.0, translation_z = -205.0;
 float scale_factor = 0.7;
-bool lights[3] = { true, true, true }; // Array para controlar as luzes (ativadas/desativadas)
 
-// Defina as posições das luzes
-GLfloat light0_position[] = { -50.0, 50.0, -50.0, 1.0 };
-GLfloat light1_position[] = { 50.0, 50.0, -50.0, 1.0 };
-GLfloat light2_position[] = { 0.0, -50.0, 0.0, 1.0 };
+void keyboard(unsigned char key, int x, int y) {
+    switch(key) {
+        case 'w': // Move object up
+            translation_y += 1.0;
+            cout << "Move object up" << endl;
+            break;
+        case 's': // Move object down
+            translation_y -= 1.0;
+            cout << "Move object down" << endl;
+            break;
+        case 'a': // Move object left
+            translation_x -= 1.0;
+            cout << "Move object left" << endl;
+            break;
+        case 'd': // Move object right
+            translation_x += 1.0;
+            cout << "Move object right" << endl;
+            break;
+        case 'q': // Move object closer
+            translation_z += 1.0;
+            cout << "Move object closer" << endl;
+            break;
+        case 'e': // Move object farther
+            translation_z -= 1.0;
+            cout << "Move object farther" << endl;
+            break;
+        case 'i': // Rotate object up (around x-axis)
+            rotation_angle_x += 1.0;
+            cout << "Rotate object up (around x-axis)" << endl;
+            break;
+        case 'k': // Rotate object down (around x-axis)
+            rotation_angle_x -= 1.0;
+            cout << "Rotate object down (around x-axis)" << endl;
+            break;
+        case 'j': // Rotate object left (around y-axis)
+            rotation_angle_y -= 1.0;
+            cout << "Rotate object left (around y-axis)" << endl;
+            break;
+        case 'l': // Rotate object right (around y-axis)
+            rotation_angle_y += 1.0;
+            cout << "Rotate object right (around y-axis)" << endl;
+            break;
+        case 'u': // Rotate object clockwise (around z-axis)
+            rotation_angle_z += 1.0;
+            cout << "Rotate object clockwise (around z-axis)" << endl;
+            break;
+        case 'o': // Rotate object counterclockwise (around z-axis)
+            rotation_angle_z -= 1.0;
+            cout << "Rotate object counterclockwise (around z-axis)" << endl;
+            break;
+        case '+': // Scale up
+            scale_factor += 0.1;
+            cout << "Scale up" << endl;
+            break;
+        case '-': // Scale down
+            scale_factor -= 0.1;
+            cout << "Scale down" << endl;
+            break;
+        case 27: // ESC key to exit
+            exit(0);
+            break;
+    }
+    glutPostRedisplay(); // Redraw scene
+}
 
 void initLights() {
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
@@ -45,7 +102,7 @@ void initLights() {
     // Set the position of the light
     GLfloat light0_position[] = { -50.0, 50.0, -50.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-// Define material properties
+    // Define material properties
     GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
     GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
     GLfloat shininess = 60.0; // Define shininess coefficient
@@ -56,72 +113,6 @@ void initLights() {
     glMaterialf(GL_FRONT, GL_SHININESS, shininess); // Set shininess coefficient
 
 }
-
-void keyboard(unsigned char key, int x, int y) {
-    switch(key) {
-        case 'w': // Move object up
-            trans_y += 1.0;
-            cout << "Move object up" << endl;
-            break;
-        case 's': // Move object down
-            trans_y -= 1.0;
-            cout << "Move object down" << endl;
-            break;
-        case 'a': // Move object left
-            trans_x -= 1.0;
-            cout << "Move object left" << endl;
-            break;
-        case 'd': // Move object right
-            trans_x += 1.0;
-            cout << "Move object right" << endl;
-            break;
-        case 'q': // Move object closer
-            trans_z += 1.0;
-            cout << "Move object closer" << endl;
-            break;
-        case 'e': // Move object farther
-            trans_z -= 1.0;
-            cout << "Move object farther" << endl;
-            break;
-        case 'i': // Rotate object up (around x-axis)
-            rot_ele_x += 1.0;
-            cout << "Rotate object up (around x-axis)" << endl;
-            break;
-        case 'k': // Rotate object down (around x-axis)
-            rot_ele_x -= 1.0;
-            cout << "Rotate object down (around x-axis)" << endl;
-            break;
-        case 'j': // Rotate object left (around y-axis)
-            rot_ele_y -= 1.0;
-            cout << "Rotate object left (around y-axis)" << endl;
-            break;
-        case 'l': // Rotate object right (around y-axis)
-            rot_ele_y += 1.0;
-            cout << "Rotate object right (around y-axis)" << endl;
-            break;
-        case 'u': // Rotate object clockwise (around z-axis)
-            rot_ele_z += 1.0;
-            cout << "Rotate object clockwise (around z-axis)" << endl;
-            break;
-        case 'o': // Rotate object counterclockwise (around z-axis)
-            rot_ele_z -= 1.0;
-            cout << "Rotate object counterclockwise (around z-axis)" << endl;
-            break;
-        case '+': // Scale up
-            scale_factor += 0.1;
-            cout << "Scale up" << endl;
-            break;
-        case '-': // Scale down
-            scale_factor -= 0.1;
-            cout << "Scale down" << endl;
-            break;
-        case 27: // ESC key to exit
-            exit(0);
-            break;
-    }
-    glutPostRedisplay(); // Redraw scene
-}
-
 
 void loadObj(string fname)
 {
@@ -186,10 +177,10 @@ void loadObj(string fname)
     file.close();
 }
 
-void createElephantDisplayList()
+void createObjectDisplayList()
 {
-    elephant = glGenLists(1); // Generate a new display list ID
-    glNewList(elephant, GL_COMPILE); // Begin compiling the display list
+    object = glGenLists(1); // Generate a new display list ID
+    glNewList(object, GL_COMPILE); // Begin compiling the display list
     glPushMatrix(); // Push the current matrix onto the stack
 
     glBegin(GL_TRIANGLES); // Begin drawing triangles
@@ -232,24 +223,24 @@ void reshape(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void drawElephant()
+void drawObject()
 {
     glPushMatrix();
 
 
-    glTranslatef(trans_x, trans_y, trans_z);
+    glTranslatef(translation_x, translation_y, translation_z);
 
 
-    glRotatef(rot_ele, 0, 1, 0);
-    glRotatef(rot_ele_x, 1, 0, 0);
-    glRotatef(rot_ele_y, 0, 1, 0);
-    glRotatef(rot_ele_z, 0, 0, 1);
+    glRotatef(rotation_angle, 0, 1, 0);
+    glRotatef(rotation_angle_x, 1, 0, 0);
+    glRotatef(rotation_angle_y, 0, 1, 0);
+    glRotatef(rotation_angle_z, 0, 0, 1);
 
     glColor3f(1.0, 0.23, 0.27);
     glScalef(scale_factor, scale_factor, scale_factor);
 
 
-    glCallList(elephant);
+    glCallList(object);
 
     glPopMatrix();
 }
@@ -259,7 +250,7 @@ void display(void)
     glClearColor(1.0, 0.75, 0.8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    drawElephant();
+    drawObject();
     glutSwapBuffers();
 }
 
@@ -285,7 +276,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutTimerFunc(10, timer, 0);
     loadObj(argv[1]);
-    createElephantDisplayList();
+    createObjectDisplayList();
 
     glutKeyboardFunc(keyboard);
     initLights();
