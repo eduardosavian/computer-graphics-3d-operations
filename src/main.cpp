@@ -7,16 +7,13 @@ using namespace std;
 
 //globals
 
-unsigned int elefante;
+unsigned int object;
 vector<vector<float>> vertices;
 vector<vector<int>> faces;
 vector<vector<float>> normals;
 vector<vector<float>> textures;
-
 vector<vector<int>> texture_faces;
 vector<vector<int>> normal_faces;
-
-float rot_ele;
 
 float rotation_angle = 0.0;
 float rotation_angle_x = 0.0;
@@ -28,6 +25,33 @@ float translation_x = 0.0, translation_y = -300.0, translation_z = -800.0;
 float scale_factor = 1.0;
 
 
+void initLights() {
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    // Configure the ambient, diffuse, and specular components of the light
+    GLfloat light0_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+    GLfloat light0_diffuse[] = { 0.8, 0/8, 0.8, 1.0 };
+    GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light0_specular);
+
+    // Set the position of the light
+    GLfloat light0_position[] = { -50.0, 50.0, -50.0, 1.0 };
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+    // Define material properties
+    GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
+    GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
+    GLfloat shininess = 30.0; // Define shininess coefficient
+
+    // Set material properties for the object
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, color_1); // Set ambient and diffuse color
+    glMaterialfv(GL_FRONT, GL_SPECULAR, color_2); // Set specular color
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess); // Set shininess coefficient
+}
 
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
@@ -163,11 +187,11 @@ void loadObj(string fname)
             }
         }
     }
+    
 
-
-    elefante = glGenLists(1);
+    object = glGenLists(1);
     glPointSize(2.0);
-    glNewList(elefante, GL_COMPILE);
+    glNewList(object, GL_COMPILE);
     {
         glPushMatrix();
         glBegin(GL_TRIANGLES);
@@ -223,7 +247,7 @@ void reshape(int w, int h)
 
     glMatrixMode(GL_MODELVIEW);
 }
-void drawElephant()
+void drawObject()
 {
     glPushMatrix();
     glTranslatef(translation_x, translation_y, translation_z);
@@ -233,7 +257,7 @@ void drawElephant()
     glRotatef(rotation_angle_z, 0, 0, 1);
     glColor3f(0.3, 0.23, 0.27);
     glScalef(scale_factor, scale_factor, scale_factor);
-    glCallList(elefante);
+    glCallList(object);
     glPopMatrix();
 }
 void display(void)
@@ -241,7 +265,7 @@ void display(void)
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    drawElephant();
+    drawObject();
     glutSwapBuffers();
 }
 
@@ -267,6 +291,8 @@ int main(int argc, char** argv)
     glutTimerFunc(10, timer, 0);
     loadObj(argv[1]);
     glutKeyboardFunc(keyboard);
+    initLights();
+
     glutMainLoop();
     return 0;
 }
