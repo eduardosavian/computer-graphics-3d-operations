@@ -25,7 +25,8 @@ float light_position_y = 0.0;
 float light_position_z = 0.0;
 
 void initAmbientLight() {
-    glDisable(GL_LIGHT0);
+    glDisable(GL_LIGHTING); // Disable lighting before configuring the new light
+    glDisable(GL_LIGHT0); // Disable previous light
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -49,7 +50,8 @@ void initAmbientLight() {
 }
 
 void initDiffuseLight() {
-    glDisable(GL_LIGHT0);
+    glDisable(GL_LIGHTING); // Disable lighting before configuring the new light
+    glDisable(GL_LIGHT0); // Disable previous light
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -73,7 +75,8 @@ void initDiffuseLight() {
 }
 
 void initSpecularLight() {
-    glDisable(GL_LIGHT0);
+    glDisable(GL_LIGHTING); // Disable lighting before configuring the new light
+    glDisable(GL_LIGHT0); // Disable previous light
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -210,7 +213,7 @@ void keyboard(unsigned char key, int x, int y) {
             exit(0);
             break;
     }
-    cout << "Object Position: (" << translation_x << ", " << translation_y << ", " << translation_z << ")" << endl;
+    cout << "Object Position: (" << translation_x << ", " << translation_y << ", " << translation_z << ")" << " Scale: " << scale_factor << endl;
 
     cout << "Light Source Position: (" << light_position_x << ", " << light_position_y << ", " << light_position_z << ")" << endl;
 
