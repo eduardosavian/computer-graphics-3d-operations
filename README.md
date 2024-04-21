@@ -52,3 +52,36 @@ make clean
 ```bash
 make clean && make && ./cgt data/<input_file>
 ```
+
+## Keyboard Function
+
+The `keyboard` function handles keyboard input for various transformations and operations in the program. Here's a breakdown of the supported keys and their corresponding actions:
+
+- **w**: Move object up
+- **s**: Move object down
+- **a**: Move object left
+- **d**: Move object right
+- **q**: Move object closer
+- **e**: Move object farther
+- **i**: Rotate object up (around x-axis)
+- **k**: Rotate object down (around x-axis)
+- **j**: Rotate object left (around y-axis)
+- **l**: Rotate object right (around y-axis)
+- **u**: Rotate object clockwise (around z-axis)
+- **o**: Rotate object counterclockwise (around z-axis)
+- **+**: Scale up
+- **-**: Scale down
+- **1**: Initialize ambient light
+- **2**: Initialize diffuse light
+- **3**: Initialize specular light
+- **z**: Move light source up
+- **x**: Move light source down
+- **c**: Move light source left
+- **v**: Move light source right
+- **b**: Move light source closer
+- **n**: Move light source farther
+- **9**: Reset light position
+- **0**: Reset figure position and properties
+- **ESC (27)**: Exit the program
+
+Each key press triggers a specific action, such as moving, rotating, scaling, or initializing lighting properties.
