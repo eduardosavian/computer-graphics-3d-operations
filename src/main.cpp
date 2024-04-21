@@ -80,20 +80,32 @@ void loadObj(string fname)
     glNewList(elephant, GL_COMPILE);
     {
         glPushMatrix();
-        glBegin(GL_LINES);
+        glBegin(GL_TRIANGLES);
 
         for(int i = 0; i < faces.size(); i++)
         {
             vector<int> face = faces[i];
+            vector<int> texture_face = texture_faces[i]; // Texture indices for the current face
 
-            glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
-            glVertex3f(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
+            for (int j = 0; j < 3; j++) // Each face has 3 vertices
+            {
+                int vertex_index = face[j];
+                int texture_index = texture_face[j]; // Texture index for the current vertex
 
-            glVertex3f(vertices[face[1]][0], vertices[face[1]][1], vertices[face[1]][2]);
-            glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
+                // Set texture coordinates
+                if (texture_index >= 0 && texture_index < textures.size())
+                {
+                    float u = textures[texture_index][0];
+                    float v = textures[texture_index][1];
+                    glTexCoord2f(u, v);
+                }
 
-            glVertex3f(vertices[face[2]][0], vertices[face[2]][1], vertices[face[2]][2]);
-            glVertex3f(vertices[face[0]][0], vertices[face[0]][1], vertices[face[0]][2]);
+                // Set vertex coordinates
+                if (vertex_index >= 0 && vertex_index < vertices.size())
+                {
+                    glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
+                }
+            }
         }
         glEnd();
     }

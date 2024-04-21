@@ -42,7 +42,7 @@ make all
 ```
 
 ```bash
-./cgt
+./cgt data/<input_file>
 ```
 
 ```bash
@@ -50,5 +50,5 @@ make clean
 ```
 
 ```bash
-make all && ./cgt && make clea
+make clean && make && ./cgt data/<input_file>
 ```
