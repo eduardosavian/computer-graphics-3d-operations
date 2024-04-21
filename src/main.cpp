@@ -56,51 +56,51 @@ void initLights() {
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
         case 'w': // Move object up
-            translation_y += 1.0;
+            translation_y += 10.0;
             cout << "Move object up" << endl;
             break;
         case 's': // Move object down
-            translation_y -= 1.0;
+            translation_y -= 10.0;
             cout << "Move object down" << endl;
             break;
         case 'a': // Move object left
-            translation_x -= 1.0;
+            translation_x -= 10.0;
             cout << "Move object left" << endl;
             break;
         case 'd': // Move object right
-            translation_x += 1.0;
+            translation_x += 10.0;
             cout << "Move object right" << endl;
             break;
         case 'q': // Move object closer
-            translation_z += 1.0;
+            translation_z += 10.0;
             cout << "Move object closer" << endl;
             break;
         case 'e': // Move object farther
-            translation_z -= 1.0;
+            translation_z -= 10.0;
             cout << "Move object farther" << endl;
             break;
         case 'i': // Rotate object up (around x-axis)
-            rotation_angle_x += 1.0;
+            rotation_angle_x += 10.0;
             cout << "Rotate object up (around x-axis)" << endl;
             break;
         case 'k': // Rotate object down (around x-axis)
-            rotation_angle_x -= 1.0;
+            rotation_angle_x -= 10.0;
             cout << "Rotate object down (around x-axis)" << endl;
             break;
         case 'j': // Rotate object left (around y-axis)
-            rotation_angle_y -= 1.0;
+            rotation_angle_y -= 10.0;
             cout << "Rotate object left (around y-axis)" << endl;
             break;
         case 'l': // Rotate object right (around y-axis)
-            rotation_angle_y += 1.0;
+            rotation_angle_y += 10.0;
             cout << "Rotate object right (around y-axis)" << endl;
             break;
         case 'u': // Rotate object clockwise (around z-axis)
-            rotation_angle_z += 1.0;
+            rotation_angle_z += 10.0;
             cout << "Rotate object clockwise (around z-axis)" << endl;
             break;
         case 'o': // Rotate object counterclockwise (around z-axis)
-            rotation_angle_z -= 1.0;
+            rotation_angle_z -= 10.0;
             cout << "Rotate object counterclockwise (around z-axis)" << endl;
             break;
         case '+': // Scale up
@@ -247,6 +247,7 @@ void reshape(int w, int h)
 
     glMatrixMode(GL_MODELVIEW);
 }
+
 void drawObject()
 {
     glPushMatrix();
