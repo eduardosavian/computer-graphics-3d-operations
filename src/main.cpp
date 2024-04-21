@@ -9,6 +9,8 @@ using namespace std;
 unsigned int elefante;
 vector<vector<float>> vertices;
 vector<vector<int>> faces;
+vector<vector<float>> normals;
+vector<vector<float>> textures;
 float rot_ele;
 
 void loadObj(string fname)
@@ -28,27 +30,19 @@ void loadObj(string fname)
         {
             if (tipo == "v")
             {
-                vector<float> vertice;
                 float x, y, z;
                 arquivo >> x >> y >> z;
-                vertice.push_back(x);
-                vertice.push_back(y);
-                vertice.push_back(z);
-                vertices.push_back(vertice);
+                vertices.push_back({x, y, z});
             }
 
             if (tipo == "f")
             {
-                vector<int> face;
                 string x, y, z;
                 arquivo >> x >> y >> z;
                 int fp = stoi(x.substr(0, x.find("/"))) - 1;
                 int fs = stoi(y.substr(0, y.find("/"))) - 1;
                 int ft = stoi(z.substr(0, z.find("/"))) - 1;
-                face.push_back(fp);
-                face.push_back(fs);
-                face.push_back(ft);
-                faces.push_back(face);
+                faces.push_back({fp, fs, ft});
             }
         }
     }
