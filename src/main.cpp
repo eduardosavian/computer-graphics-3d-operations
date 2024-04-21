@@ -35,7 +35,7 @@ void initLights() {
 
     // Configure the ambient, diffuse, and specular components of the light
     GLfloat light0_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-    GLfloat light0_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat light0_diffuse[] = { 0.8, 0/8, 0.8, 1.0 };
     GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
@@ -45,51 +45,75 @@ void initLights() {
     // Set the position of the light
     GLfloat light0_position[] = { -50.0, 50.0, -50.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+// Define material properties
+    GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
+    GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
+    GLfloat shininess = 60.0; // Define shininess coefficient
+
+    // Set material properties for the object
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, color_1); // Set ambient and diffuse color
+    glMaterialfv(GL_FRONT, GL_SPECULAR, color_2); // Set specular color
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess); // Set shininess coefficient
+
 }
 
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
         case 'w': // Move object up
             trans_y += 1.0;
+            cout << "Move object up" << endl;
             break;
         case 's': // Move object down
             trans_y -= 1.0;
+            cout << "Move object down" << endl;
             break;
         case 'a': // Move object left
             trans_x -= 1.0;
+            cout << "Move object left" << endl;
             break;
         case 'd': // Move object right
             trans_x += 1.0;
+            cout << "Move object right" << endl;
             break;
         case 'q': // Move object closer
             trans_z += 1.0;
+            cout << "Move object closer" << endl;
             break;
         case 'e': // Move object farther
             trans_z -= 1.0;
+            cout << "Move object farther" << endl;
             break;
         case 'i': // Rotate object up (around x-axis)
             rot_ele_x += 1.0;
+            cout << "Rotate object up (around x-axis)" << endl;
             break;
         case 'k': // Rotate object down (around x-axis)
             rot_ele_x -= 1.0;
+            cout << "Rotate object down (around x-axis)" << endl;
             break;
         case 'j': // Rotate object left (around y-axis)
             rot_ele_y -= 1.0;
+            cout << "Rotate object left (around y-axis)" << endl;
             break;
         case 'l': // Rotate object right (around y-axis)
             rot_ele_y += 1.0;
+            cout << "Rotate object right (around y-axis)" << endl;
             break;
         case 'u': // Rotate object clockwise (around z-axis)
             rot_ele_z += 1.0;
+            cout << "Rotate object clockwise (around z-axis)" << endl;
             break;
         case 'o': // Rotate object counterclockwise (around z-axis)
             rot_ele_z -= 1.0;
+            cout << "Rotate object counterclockwise (around z-axis)" << endl;
             break;
         case '+': // Scale up
             scale_factor += 0.1;
+            cout << "Scale up" << endl;
             break;
         case '-': // Scale down
             scale_factor -= 0.1;
+            cout << "Scale down" << endl;
             break;
         case 27: // ESC key to exit
             exit(0);
@@ -97,6 +121,7 @@ void keyboard(unsigned char key, int x, int y) {
     }
     glutPostRedisplay(); // Redraw scene
 }
+
 
 void loadObj(string fname)
 {
@@ -237,8 +262,6 @@ void display(void)
     drawElephant();
     glutSwapBuffers();
 }
-
-
 
 void timer(int value) {
     glutPostRedisplay();
