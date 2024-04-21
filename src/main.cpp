@@ -247,7 +247,6 @@ void drawObject()
 
 void display(void)
 {
-    glClearColor(1.0, 0.75, 0.8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     drawObject();
