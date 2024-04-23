@@ -18,7 +18,7 @@ float rotation_angle = 0.0;
 float rotation_angle_x = 0.0;
 float rotation_angle_y = -45.0;
 float rotation_angle_z = 0.0;
-float translation_x = 0.0, translation_y = -200, translation_z = -1000.0;
+float translation_x = 0.0, translation_y = 0.0, translation_z = 0.0;
 float scale_factor = 1.0;
 
 void initLight() {
@@ -58,6 +58,37 @@ void keyboard(unsigned char key, int x, int y) {
         // Scaling controls
         case '+': scale_factor += 0.1; break; // Scale up
         case '-': scale_factor -= 0.1; break; // Scale down
+        case '1':
+            static bool diffuseEnabled = true;
+            if (diffuseEnabled)
+                glDisable(GL_LIGHT0); // Disable diffuse light
+            else
+                glEnable(GL_LIGHT0); // Enable diffuse light
+            diffuseEnabled = !diffuseEnabled;
+            break;
+
+        // Toggle specular light
+        case '2':
+            static bool specularEnabled = true;
+            if (specularEnabled)
+                glDisable(GL_LIGHTING); // Disable specular light
+            else
+                glEnable(GL_LIGHTING); // Enable specular light
+            specularEnabled = !specularEnabled;
+            break;
+
+        // Toggle ambient light
+        case '3':
+            static bool ambientEnabled = true;
+            if (ambientEnabled) {
+                    GLfloat qaAmbientLight[] = {0.2, 0.2, 0.2, 1.0}; // Adjust ambient light color and intensity here
+                    glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight); // Restore ambient light
+                } else {
+                    GLfloat qaNoAmbient[] = {0.0, 0.0, 0.0, 1.0};
+                    glLightfv(GL_LIGHT0, GL_AMBIENT, qaNoAmbient); // Set ambient light to zero
+                    }
+                ambientEnabled = !ambientEnabled;
+            break;
 
         // Reset
         case '0': // Reset figure
@@ -135,17 +166,27 @@ void renderObj() {
         for (int j = 0; j < 3; ++j) {
             int vertex_index = face[j];
             if (vertex_index >= 0 && vertex_index < vertices.size()) {
-                int normal_index = normal_faces[i][j]; // Retrieve the normal index for this vertex
-                if (normal_index >= 0 && normal_index < normals.size()) {
-                    //glNormal3f(normals[normal_index][0], normals[normal_index][1], normals[normal_index][2]);
+                // Check if there are normals corresponding to the vertex
+                if (normals.size() > 0 && normals.size() > vertex_index) {
+                    // Retrieve the normal index for the vertex
+                    int normal_index = normal_faces[i][j];
+                    //if (normal_index >= 0 && normal_index < normals.size()) {
+                        // Use the normal for this vertex
+                        //glNormal3f(normals[normal_index][0], normals[normal_index][1], normals[normal_index][2]);
+                    //} else {
+                        // Use a default normal (0, 0, 1) if the normal index is out of range
+                        glNormal3f(0.0f, 0.0f, 1.0f);
+                    //}
+                } else {
+                    // Use a default normal (0, 0, 1) if no normals are available
+                    glNormal3f(0.0f, 0.0f, 1.0f);
                 }
+                // Render the vertex
                 glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
             }
         }
     }
     glEnd();
-
-
 
     glPopMatrix();
     glEndList();
