@@ -57,8 +57,7 @@ make clean && make && ./cgt data/<input_file>
 
 The `keyboard` function handles keyboard input for various transformations and operations in the program. Here's a breakdown of the supported keys and their corresponding actions:
 
-
-https://www.youtube.com/watch?v=g_0yV7jZvGg
+[Vídeo](https://www.youtube.com/watch?v=g_0yV7jZvGg)
 
 - **w**: Move object up
 - **s**: Move object down
