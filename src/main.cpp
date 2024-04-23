@@ -130,15 +130,22 @@ void renderObj() {
     glMaterialf(GL_FRONT, GL_SHININESS, 60);
 
     glBegin(GL_TRIANGLES);
-    for (const auto& face : faces) {
-        for (int i = 0; i < 3; ++i) {
-            int vertex_index = face[i];
+    for (size_t i = 0; i < faces.size(); ++i) {
+        const auto& face = faces[i];
+        for (int j = 0; j < 3; ++j) {
+            int vertex_index = face[j];
             if (vertex_index >= 0 && vertex_index < vertices.size()) {
+                int normal_index = normal_faces[i][j]; // Retrieve the normal index for this vertex
+                if (normal_index >= 0 && normal_index < normals.size()) {
+                    //glNormal3f(normals[normal_index][0], normals[normal_index][1], normals[normal_index][2]);
+                }
                 glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
             }
         }
     }
     glEnd();
+
+
 
     glPopMatrix();
     glEndList();
@@ -149,6 +156,7 @@ void reshape(int w, int h)
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    glOrtho(-1.0, 1.0,-1.0, 1.0,-1.0, 1.0);
     gluPerspective(60, (GLfloat)w / (GLfloat)h, 0.1, 10000.0);
 
     glMatrixMode(GL_MODELVIEW);
