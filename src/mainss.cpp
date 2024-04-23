@@ -131,50 +131,21 @@ void loadObj(const string& fname) {
                 string v1, v2, v3;
                 file >> v1 >> v2 >> v3;
 
-                vector<int> indices1;
-                indices1.reserve(3); // Reserve space for 6 indices (2 sets of vertex indices)
-
+                // Parse face indices
+                vector<int> indices;
+                indices.reserve(3);
                 size_t pos1 = v1.find_first_of('/');
                 size_t pos2 = v2.find_first_of('/');
                 size_t pos3 = v3.find_first_of('/');
+                indices.push_back(stoi(v1.substr(0, pos1)) - 1);
+                indices.push_back(stoi(v2.substr(0, pos2)) - 1);
+                indices.push_back(stoi(v3.substr(0, pos3)) - 1);
 
-                // Extract the first set of vertex indices
-                string vf1 = v1.substr(0, pos1);
-                string vf2 = v2.substr(0, pos2);
-                string vf3 = v3.substr(0, pos3);
-
-                indices1.push_back(stoi(vf1) - 1);
-                indices1.push_back(stoi(vf2) - 1);
-                indices1.push_back(stoi(vf3) - 1);
-
-                texture_faces.push_back(indices1);
-
-                vector<int> indices2;
-                indices2.reserve(3); // Reserve space for 6 indices (2 sets of vertex indices)
-
-                // Extract the second set of vertex indices
-                vf1 = v1.substr(v1.find_last_of('/') + 1);
-                vf2 = v2.substr(v2.find_last_of('/') + 1);
-                vf3 = v3.substr(v3.find_last_of('/') + 1);
-
-                indices2.push_back(stoi(vf1) - 1);
-                indices2.push_back(stoi(vf2) - 1);
-                indices2.push_back(stoi(vf3) - 1);
-
-                normal_faces.push_back(indices2);
+                faces.push_back(indices);
             }
-
-            }
+        }
     }
     file.close();
-
-    cout << "Vertices: " << vertices.size() << endl;
-    cout << "Faces: " << faces.size() << endl;
-    cout << "Normals: " << normals.size() << endl;
-    cout << "Textures: " << textures.size() << endl;
-    cout << "Texture Faces: " << texture_faces.size() << endl;
-    cout << "Normal Faces: " << normal_faces.size() << endl;
-
 }
 
 
@@ -190,30 +161,31 @@ void renderObj() {
     glMaterialf(GL_FRONT, GL_SHININESS, 60);
 
     glBegin(GL_TRIANGLES);
-    glBegin(GL_TRIANGLES);
-for (size_t i = 0; i < texture_faces.size(); ++i) {
-    const auto& face = texture_faces[i];
-    for (int j = 0; j < 3; ++j) {
-        int vertex_index = face[j];
-        if (vertex_index >= 0 && vertex_index < vertices.size()) {
-            glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
+    for (size_t i = 0; i < faces.size(); ++i) {
+        const auto& face = faces[i];
+        for (int j = 0; j < 3; ++j) {
+            int vertex_index = face[j];
+            if (vertex_index >= 0 && vertex_index < vertices.size()) {
+                // Check if there are normals corresponding to the vertex
+                if (normals.size() > 0 && normals.size() > vertex_index) {
+                    // Retrieve the normal index for the vertex
+                    int normal_index = normal_faces[i][j];
+                    //if (normal_index >= 0 && normal_index < normals.size()) {
+                        // Use the normal for this vertex
+                        //glNormal3f(normals[normal_index][0], normals[normal_index][1], normals[normal_index][2]);
+                    //} else {
+                        // Use a default normal (0, 0, 1) if the normal index is out of range
+                        glNormal3f(0.0f, 0.0f, 1.0f);
+                    //}
+                } else {
+                    // Use a default normal (0, 0, 1) if no normals are available
+                    glNormal3f(0.0f, 0.0f, 1.0f);
+                }
+                // Render the vertex
+                glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
+            }
         }
     }
-}
-
-for (size_t i = 0; i < normal_faces.size(); ++i) {
-    const auto& face = normal_faces[i];
-    for (int j = 0; j < 3; ++j) {
-        int vertex_index = face[j];
-        if (vertex_index >= 0 && vertex_index < vertices.size()) {
-            glNormal3f(normals[vertex_index][0], normals[vertex_index][1], normals[vertex_index][2]);
-        }
-    }
-}
-
-
-glEnd();
-
     glEnd();
 
     glPopMatrix();
