@@ -67,7 +67,7 @@ void keyboard(unsigned char key, int x, int y) {
             translation_x = 0.0, translation_y = 0.0, translation_z = -800.0;
             scale_factor = 1.0;
             break;
-    
+
         // Exit
         case 27: exit(0); break; // ESC key to exit
     }
@@ -100,26 +100,23 @@ void loadObj(const string& fname) {
                 string v1, v2, v3;
                 file >> v1 >> v2 >> v3;
 
-                int v1p, v1t, v1n;
-                int v2p, v2t, v2n;
-                int v3p, v3t, v3n;
+                // Parse face indices
+                vector<int> indices;
+                indices.reserve(3);
+                size_t pos1 = v1.find_first_of('/');
+                size_t pos2 = v2.find_first_of('/');
+                size_t pos3 = v3.find_first_of('/');
+                indices.push_back(stoi(v1.substr(0, pos1)) - 1);
+                indices.push_back(stoi(v2.substr(0, pos2)) - 1);
+                indices.push_back(stoi(v3.substr(0, pos3)) - 1);
 
-                sscanf(v1.c_str(), "%d/%d/%d", &v1p, &v1t, &v1n);
-                sscanf(v2.c_str(), "%d/%d/%d", &v2p, &v2t, &v2n);
-                sscanf(v3.c_str(), "%d/%d/%d", &v3p, &v3t, &v3n);
-
-                v1p--; v1t--; v1n--;
-                v2p--; v2t--; v2n--;
-                v3p--; v3t--; v3n--;
-
-                faces.push_back({v1p, v2p, v3p});
-                texture_faces.push_back({v1t, v2t, v3t});
-                normal_faces.push_back({v1n, v2n, v3n});
+                faces.push_back(indices);
             }
         }
     }
     file.close();
 }
+
 
 void renderObj() {
     glClear(GL_COLOR_BUFFER_BIT);
