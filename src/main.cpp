@@ -20,10 +20,8 @@ float rotation_angle_y = 0.0;
 float rotation_angle_z = 0.0;
 float translation_x = 0.0, translation_y = 0, translation_z = -800.0;
 float scale_factor = 1.0;
-float light_position_x = 0.0;
-float light_position_y = 0.0;
-float light_position_z = 0.0;
 float position_z_offset = 0.0; // Added variable
+GLfloat light0_position[] = { 0.0, 0.0, 0.0, 1.0 }; // Define and initialize light position
 
 void initAmbientLight(GLfloat light_position_x, GLfloat light_position_y, GLfloat light_position_z) {
     glDisable(GL_LIGHTING); // Disable lighting before configuring the new light
@@ -39,10 +37,6 @@ void initAmbientLight(GLfloat light_position_x, GLfloat light_position_y, GLfloa
     // Set the position of the light
     GLfloat light0_position[] = { light_position_x, light_position_y, light_position_z, 1.0 }; // Light position
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-
-    GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
-    GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
-    GLfloat shininess = 30.0; // Define shininess coefficient
 }
 
 void initDiffuseLight(GLfloat light_position_x, GLfloat light_position_y, GLfloat light_position_z) {
@@ -59,10 +53,6 @@ void initDiffuseLight(GLfloat light_position_x, GLfloat light_position_y, GLfloa
     // Set the position of the light
     GLfloat light0_position[] = { light_position_x, light_position_y, light_position_z, 1.0 }; // Light position
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-
-    GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
-    GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
-    GLfloat shininess = 30.0; // Define shininess coefficient
 }
 
 void initSpecularLight(GLfloat light_position_x, GLfloat light_position_y, GLfloat light_position_z) {
@@ -79,10 +69,6 @@ void initSpecularLight(GLfloat light_position_x, GLfloat light_position_y, GLflo
     // Set the position of the light
     GLfloat light0_position[] = { light_position_x, light_position_y, light_position_z, 1.0 }; // Light position
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-
-    GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
-    GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
-    GLfloat shininess = 30.0; // Define shininess coefficient
 }
 
 
@@ -156,38 +142,7 @@ void keyboard(unsigned char key, int x, int y) {
             initSpecularLight(0.0, -2.0, -3.0);
             cout << "Specular light enabled" << endl;
             break;
-        case 'z': // Move light source up
-            light_position_y += 0.1;
-            cout << "Move light source up" << endl;
-            break;
-        case 'x': // Move light source down
-            light_position_y -= 0.1;
-            cout << "Move light source down" << endl;
-            break;
-        case 'c': // Move light source left
-            light_position_x -= 0.1;
-            cout << "Move light source left" << endl;
-            break;
-        case 'v': // Move light source right
-            light_position_x += 0.1;
-            cout << "Move light source right" << endl;
-            break;
-        case 'b': // Move light source closer
-            light_position_z += 0.1;
-            cout << "Move light source closer" << endl;
-            break;
-        case 'n': // Move light source farther
-            light_position_z -= 0.1;
-            cout << "Move light source farther" << endl;
-            break;
-        case '9': // Move light source farther
-            light_position_x = 0.0;
-            light_position_y = 0.0;
-            light_position_z = 0.0;
-            cout << "Reset light" << endl;
-            break;
         case '0': // Move light source farther
-            light_position_z -= 0.1;
             rotation_angle_x = 0.0;
             rotation_angle_y = 45.0;
             rotation_angle_z = 0.0;
@@ -200,8 +155,6 @@ void keyboard(unsigned char key, int x, int y) {
             break;
     }
     cout << "Object Position: (" << translation_x << ", " << translation_y << ", " << translation_z << ")" << " Scale: " << scale_factor << endl;
-
-    cout << "Light Source Position: (" << light_position_x << ", " << light_position_y << ", " << light_position_z << ")" << endl;
 
     glutPostRedisplay(); // Redraw scene
 }
@@ -325,10 +278,14 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+
+    // Draw the object
     drawObject();
 
     glutSwapBuffers();
 }
+
 
 void timer(int value) {
     glutPostRedisplay();
