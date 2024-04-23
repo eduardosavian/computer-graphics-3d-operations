@@ -23,8 +23,9 @@ float scale_factor = 1.0;
 float light_position_x = 0.0;
 float light_position_y = 0.0;
 float light_position_z = 0.0;
+float position_z_offset = 0.0; // Added variable
 
-void initAmbientLight() {
+void initAmbientLight(GLfloat light_position_x, GLfloat light_position_y, GLfloat light_position_z) {
     glDisable(GL_LIGHTING); // Disable lighting before configuring the new light
     glDisable(GL_LIGHT0); // Disable previous light
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
@@ -32,24 +33,19 @@ void initAmbientLight() {
     glEnable(GL_LIGHT0);
 
     // Configure the ambient component of the light
-    GLfloat light0_ambient[] = { 0.2, 0.2, 0.2, 1.0 }; // Ambient light color (gray)
+    GLfloat light0_ambient[] = { 1.0, 0.0, 0.0, 1.0 }; // Ambient light color (red)
     glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
 
     // Set the position of the light
     GLfloat light0_position[] = { light_position_x, light_position_y, light_position_z, 1.0 }; // Light position
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
 
-        GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
+    GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
     GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
     GLfloat shininess = 30.0; // Define shininess coefficient
-
-    // Set material properties for the object
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, color_1); // Set ambient and diffuse color
-    glMaterialfv(GL_FRONT, GL_SPECULAR, color_2); // Set specular color
-    glMaterialf(GL_FRONT, GL_SHININESS, shininess); // Set shininess coefficient
 }
 
-void initDiffuseLight() {
+void initDiffuseLight(GLfloat light_position_x, GLfloat light_position_y, GLfloat light_position_z) {
     glDisable(GL_LIGHTING); // Disable lighting before configuring the new light
     glDisable(GL_LIGHT0); // Disable previous light
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
@@ -57,7 +53,7 @@ void initDiffuseLight() {
     glEnable(GL_LIGHT0);
 
     // Configure the diffuse component of the light
-    GLfloat light0_diffuse[] = { 0.5, 0.5, 0.5, 1.0 }; // Diffuse light color (gray)
+    GLfloat light0_diffuse[] = { 0.0, 0.0, 1.0, 1.0 }; // Diffuse light color (blue)
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
 
     // Set the position of the light
@@ -67,14 +63,9 @@ void initDiffuseLight() {
     GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
     GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
     GLfloat shininess = 30.0; // Define shininess coefficient
-
-    // Set material properties for the object
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, color_1); // Set ambient and diffuse color
-    glMaterialfv(GL_FRONT, GL_SPECULAR, color_2); // Set specular color
-    glMaterialf(GL_FRONT, GL_SHININESS, shininess); // Set shininess coefficient
 }
 
-void initSpecularLight() {
+void initSpecularLight(GLfloat light_position_x, GLfloat light_position_y, GLfloat light_position_z) {
     glDisable(GL_LIGHTING); // Disable lighting before configuring the new light
     glDisable(GL_LIGHT0); // Disable previous light
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
@@ -82,7 +73,7 @@ void initSpecularLight() {
     glEnable(GL_LIGHT0);
 
     // Configure the specular component of the light
-    GLfloat light0_specular[] = { 1.0, 1.0, 1.0, 1.0 }; // Specular light color (white)
+    GLfloat light0_specular[] = { 1.0, 1.0, 0.0, 1.0 }; // Specular light color (yellow)
     glLightfv(GL_LIGHT0, GL_SPECULAR, light0_specular);
 
     // Set the position of the light
@@ -92,13 +83,8 @@ void initSpecularLight() {
     GLfloat color_2[] = { 0.0, 1.0, 0.0, 1.0 }; // Define a second color
     GLfloat color_1[] = { 1.0, 1.0, 1.0, 1.0 }; // Define a first color
     GLfloat shininess = 30.0; // Define shininess coefficient
-
-    // Set material properties for the object
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, color_1); // Set ambient and diffuse color
-    glMaterialfv(GL_FRONT, GL_SPECULAR, color_2); // Set specular color
-    glMaterialf(GL_FRONT, GL_SHININESS, shininess); // Set shininess coefficient
-    // Define material properties...
 }
+
 
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
@@ -159,15 +145,15 @@ void keyboard(unsigned char key, int x, int y) {
             cout << "Scale down" << endl;
             break;
         case '1': // Initialize ambient light
-            initAmbientLight();
+            initAmbientLight(1.0, 2.0, 3.0);
             cout << "Ambient light enabled" << endl;
             break;
         case '2': // Initialize diffuse light
-            initDiffuseLight();
+            initDiffuseLight(-1.0, 0.0, 2.0);
             cout << "Diffuse light enabled" << endl;
             break;
         case '3': // Initialize specular light
-            initSpecularLight();
+            initSpecularLight(0.0, -2.0, -3.0);
             cout << "Specular light enabled" << endl;
             break;
         case 'z': // Move light source up
@@ -281,37 +267,33 @@ void loadObj(const string& fname) {
 
 void renderObj() {
     object = glGenLists(1);
-    glPointSize(2.0);
     glNewList(object, GL_COMPILE);
-    {
-        glPushMatrix();
-        glBegin(GL_TRIANGLES);
+    glPushMatrix();
 
-        for (uint i = 0; i < faces.size(); i++) {
-            vector<int> face = faces[i];
-            vector<int> normal_face = normal_faces[i]; // Fetch normal indices
+    GLfloat cor_verde[] = { 0.0, 1.0, 0.0, 1.0 };
+    GLfloat cor_branco[] = { 1.0, 1.0, 1.0, 1.0 };
 
-            for (int j = 0; j < 3; j++) {
-                int vertex_index = face[j];
-                int normal_index = normal_face[j]; // Fetch normal index
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, cor_verde);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, cor_branco);
+    glMaterialf(GL_FRONT, GL_SHININESS, 60);
 
-                if (normal_index >= 0 && normal_index < normals.size()) {
-                    float nx = normals[normal_index][0];
-                    float ny = normals[normal_index][1];
-                    float nz = normals[normal_index][2];
-                    glNormal3f(nx, ny, nz); // Specify normal for the vertex
-                }
-
-                if (vertex_index >= 0 && vertex_index < vertices.size()) {
-                    glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
-                }
+    glBegin(GL_TRIANGLES);
+    for (const auto& face : faces) {
+        for (int i = 0; i < 3; ++i) {
+            int vertex_index = face[i];
+            if (vertex_index >= 0 && vertex_index < vertices.size()) {
+                glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2] + position_z_offset);
             }
         }
-        glEnd();
     }
+    glEnd();
+
     glPopMatrix();
     glEndList();
 }
+
+
+
 
 void reshape(int w, int h)
 {
@@ -369,8 +351,8 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutTimerFunc(10, timer, 0);
     loadObj(argv[1]);
-    renderObj();
     glutKeyboardFunc(keyboard);
+    renderObj();
 
     glutMainLoop();
     return 0;
