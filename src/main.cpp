@@ -31,12 +31,16 @@ void initAmbientLight(GLfloat light_position_x, GLfloat light_position_y, GLfloa
     glEnable(GL_LIGHT0);
 
     // Configure the ambient component of the light
-    GLfloat light0_ambient[] = { 1.0, 0.0, 0.0, 1.0 }; // Ambient light color (red)
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light0_ambient);
+    GLfloat qaAmbientLight[] = { 0.2, 0.2, 0.2, 1.0 }; // Ambient light color (red)
+    GLfloat qaDiffuseLight[] = { 0.8, 0.8, 0.8, 1.0 }; // Ambient light color (red)
+    GLfloat qaSpecularLight[] = { 1.0, 1.0, 1.0, 1.0 }; // Ambient light color (red)
+    glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, qaDiffuseLight);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, qaSpecularLight);
 
     // Set the position of the light
-    GLfloat light0_position[] = { light_position_x, light_position_y, light_position_z, 1.0 }; // Light position
-    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+    GLfloat qaLightPosition[] = { 0.6, 0.6, 0.0, 1.0 }; // Light position
+    glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition);
 }
 
 void initDiffuseLight(GLfloat light_position_x, GLfloat light_position_y, GLfloat light_position_z) {
