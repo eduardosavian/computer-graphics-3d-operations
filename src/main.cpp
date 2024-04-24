@@ -3,17 +3,9 @@
 #include <vector>
 #include <GL/freeglut.h>
 #include <string>
-#include <cmath>
 using namespace std;
 
-// Globals
-unsigned int object;
-vector<vector<float>> vertices;
-vector<vector<int>> faces;
-vector<vector<float>> normals;
-vector<vector<float>> textures;
-vector<vector<int>> texture_faces;
-vector<vector<int>> normal_faces;
+//globals
 
 float rotation_angle = 0.0;
 float rotation_angle_x = 0.0;
@@ -22,22 +14,14 @@ float rotation_angle_z = 0.0;
 float translation_x = 0.0, translation_y = 0.0, translation_z = 0.0;
 float scale_factor = 1.0;
 
-void initLight()
-{
-    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+struct Object {
+    vector<vector<float>> vertices;
+    vector<vector<int>> faces;
+    vector<vector<int>> normal_faces;
+};
 
-    GLfloat qaAmbientLight[] = {0.2, 0.2, 0.2, 1.0};
-    GLfloat qaDiffuseLight[] = {0.8, 0.8, 0.8, 1.0};
-    GLfloat qaSpecularLight[] = {1.0, 1.0, 1.0, 1.0};
-    glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, qaSpecularLight);
-
-    GLfloat qaLightPosition[] = {0.6, 0.6, 0.0, 1.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition);
-}
+unsigned int elefante;
+Object object;
 
 void keyboard(unsigned char key, int x, int y)
 {
@@ -82,7 +66,6 @@ void keyboard(unsigned char key, int x, int y)
     case 'o':
         rotation_angle_z -= 10.0;
         break; // Rotate object counterclockwise (around z-axis)
-
     // Scaling controls
     case '+':
         scale_factor += 0.1;
@@ -90,99 +73,38 @@ void keyboard(unsigned char key, int x, int y)
     case '-':
         scale_factor -= 0.1;
         break; // Scale down
-    case '1':
-        static bool diffuseEnabled = true;
-        if (diffuseEnabled)
-            glDisable(GL_LIGHT0); // Disable diffuse light
-        else
-            glEnable(GL_LIGHT0); // Enable diffuse light
-        diffuseEnabled = !diffuseEnabled;
-        break;
-
-    // Toggle specular light
-    case '2':
-        static bool specularEnabled = true;
-        if (specularEnabled)
-            glDisable(GL_LIGHTING); // Disable specular light
-        else
-            glEnable(GL_LIGHTING); // Enable specular light
-        specularEnabled = !specularEnabled;
-        break;
-
-    // Toggle ambient light
-    case '3':
-        static bool ambientEnabled = true;
-        if (ambientEnabled)
-        {
-            GLfloat qaAmbientLight[] = {0.2, 0.2, 0.2, 1.0};  // Adjust ambient light color and intensity here
-            glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight); // Restore ambient light
-        }
-        else
-        {
-            GLfloat qaNoAmbient[] = {0.0, 0.0, 0.0, 1.0};
-            glLightfv(GL_LIGHT0, GL_AMBIENT, qaNoAmbient); // Set ambient light to zero
-        }
-        ambientEnabled = !ambientEnabled;
-        break;
-
-    // Reset
-    case '0': // Reset figure
-        rotation_angle_x = 0.0;
-        rotation_angle_y = 45.0;
-        rotation_angle_z = 0.0;
-        translation_x = 0.0, translation_y = 0.0, translation_z = -800.0;
-        scale_factor = 1.0;
-        break;
-
-    // Exit
-    case 27:
-        exit(0);
-        break; // ESC key to exit
-    }
-    cout << "Object Position: (" << translation_x << ", " << translation_y << ", " << translation_z << ")"
-         << " Scale: " << scale_factor << endl;
-
-    glutPostRedisplay(); // Redraw scene
 }
-
-void loadObj(const string &fname)
+}
+void loadObj(string fname)
 {
-    ifstream file(fname);
-    if (!file.is_open())
-    {
-        cout << "File not found";
+    float x, y, z;
+    ifstream arquivo(fname);
+    if (!arquivo.is_open()) {
+        cout << "arquivo nao encontrado";
         exit(1);
     }
-    else
-    {
-        string type;
-        while (file >> type)
+    else {
+        string tipo;
+        while (arquivo >> tipo)
         {
-            if (type == "v")
+            if (tipo == "v")
             {
-                float x, y, z;
-                file >> x >> y >> z;
-                vertices.push_back({x, y, z});
+                vector<float> vertice;
+                arquivo >> x >> y >> z;
+                vertice.push_back(x);
+                vertice.push_back(y);
+                vertice.push_back(z);
+                object.vertices.push_back(vertice);
             }
-            else if (type == "vn")
+
+            if (tipo == "f")
             {
-                float nx, ny, nz;
-                file >> nx >> ny >> nz;
-                normals.push_back({nx, ny, nz});
-            }
-            else if (type == "vt")
-            {
-                float u, v;
-                file >> u >> v;
-                textures.push_back({u, v});
-            }
-            else if (type == "f")
-            {
+                vector<int> face;
                 string v1, v2, v3;
-                file >> v1 >> v2 >> v3;
+                arquivo >> v1 >> v2 >> v3;
 
                 vector<int> indices1;
-                indices1.reserve(3); // Reserve space for 6 indices (2 sets of vertex indices)
+                indices1.reserve(3); // Reserve space for 3 indices
 
                 size_t pos1 = v1.find_first_of('/');
                 size_t pos2 = v2.find_first_of('/');
@@ -197,10 +119,10 @@ void loadObj(const string &fname)
                 indices1.push_back(stoi(vf2) - 1);
                 indices1.push_back(stoi(vf3) - 1);
 
-                texture_faces.push_back(indices1);
+                object.faces.push_back(indices1);
 
                 vector<int> indices2;
-                indices2.reserve(3); // Reserve space for 6 indices (2 sets of vertex indices)
+                indices2.reserve(3); // Reserve space for 3 indices
 
                 // Extract the second set of vertex indices
                 vf1 = v1.substr(v1.find_last_of('/') + 1);
@@ -211,76 +133,57 @@ void loadObj(const string &fname)
                 indices2.push_back(stoi(vf2) - 1);
                 indices2.push_back(stoi(vf3) - 1);
 
-                normal_faces.push_back(indices2);
+                object.normal_faces.push_back(indices2);
             }
         }
+        arquivo.close(); // Close the file after reading
     }
-    file.close();
 
-    cout << "Vertices: " << vertices.size() << endl;
-    cout << "Faces: " << faces.size() << endl;
-    cout << "Normals: " << normals.size() << endl;
-    cout << "Textures: " << textures.size() << endl;
-    cout << "Texture Faces: " << texture_faces.size() << endl;
-    cout << "Normal Faces: " << normal_faces.size() << endl;
-}
-
-void renderObj()
-{
     glClear(GL_COLOR_BUFFER_BIT);
-    object = glGenLists(1);
-    glNewList(object, GL_COMPILE);
-    glPushMatrix();
 
+    elefante = glGenLists(1);
+    glPointSize(2.0);
+    glNewList(elefante, GL_COMPILE);
+    glPushMatrix();
     GLfloat green[] = {0.0, 1.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_SPECULAR, green);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, green);
     glMaterialf(GL_FRONT, GL_SHININESS, 60);
 
-    glBegin(GL_TRIANGLES);
-    for (size_t i = 0; i < texture_faces.size(); ++i)
     {
-        const auto &face = texture_faces[i];
-        for (int j = 0; j < 3; ++j)
-        {
-            int vertex_index = face[j];
-            int normal_index = normal_faces[i][j];
-            if (vertex_index < vertices.size())
+        glPushMatrix();
+        glBegin(GL_TRIANGLES);
+        for(size_t i = 0; i < object.faces.size(); i++)
             {
-                glNormal3f(normals[normal_index][0], normals[normal_index][1], normals[normal_index][2]);
-                glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
+                vector<int> face = object.faces[i];
+                vector<int> normal_face = object.normal_faces[i];
+
+                glNormal3f(object.vertices[normal_face[0]][0], object.vertices[normal_face[0]][1], object.vertices[normal_face[0]][2]);
+                glVertex3f(object.vertices[face[0]][0], object.vertices[face[0]][1], object.vertices[face[0]][2]);
             }
-            else
-            {
-                cout << vertex_index << " out of range" << vertices.size() << endl;
-            }
+            glEnd();
+            glPopMatrix();
         }
-        // Set the normal for the whole face
-        
-        
-    }
-    glEnd();
 
-    glEnd();
-
-    glEnd();
+        glEnd();
 
     glPopMatrix();
     glEndList();
+    arquivo.close();
+
 }
+
 
 void reshape(int w, int h)
 {
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
-    gluPerspective(60, (GLfloat)w / (GLfloat)h, 0.1, 10000.0);
+    gluPerspective(100, (GLfloat)w / (GLfloat)h, 0.1, 1000.0);
 
     glMatrixMode(GL_MODELVIEW);
 }
-
-void drawObject()
+void drawElephant()
 {
     glPushMatrix();
     glTranslatef(translation_x, translation_y, translation_z);
@@ -290,7 +193,7 @@ void drawObject()
     glRotatef(rotation_angle_z, 0, 0, 1);
     glColor3f(0.3, 0.23, 0.27);
     glScalef(scale_factor, scale_factor, scale_factor);
-    glCallList(object);
+    glCallList(elefante);
     glPopMatrix();
 }
 
@@ -299,17 +202,16 @@ void display(void)
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    drawObject();
+    drawElephant();
     glutSwapBuffers();
 }
 
-void timer(int value)
-{
+void timer(int value) {
     glutPostRedisplay();
     glutTimerFunc(10, timer, 0);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     if (argc != 2)
     {
@@ -319,15 +221,13 @@ int main(int argc, char **argv)
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(800, 800);
+    glutInitWindowSize(800, 450);
     glutInitWindowPosition(20, 20);
-    glutCreateWindow("Load OBJ");
+    glutCreateWindow("Carregar OBJ");
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
     glutTimerFunc(10, timer, 0);
     loadObj(argv[1]);
-    renderObj();
-    initLight();
     glutKeyboardFunc(keyboard);
     glutMainLoop();
     return 0;
