@@ -3,6 +3,7 @@
 #include <vector>
 #include <GL/freeglut.h>
 #include <string>
+#include "linalg.hpp"
 using namespace std;
 
 // globals
@@ -14,11 +15,15 @@ float rotation_angle_z = 0.0;
 float translation_x = 0.0, translation_y = 0.0, translation_z = 0.0;
 float scale_factor = 1.0;
 
+using vec3 = linalg::vector<float, 3>;
+using vec3i = linalg::vector<int, 3>;
+using vec2 = linalg::vector<float, 2>;
+
 struct Object
 {
-    vector<vector<float>> vertices;
-    vector<vector<int>> faces;
-    vector<vector<int>> normal_faces;
+    vector<vec3> vertices;
+    vector<vec3i> faces;
+    vector<vec3i> normal_faces;
 };
 
 unsigned int elefante;
@@ -92,51 +97,45 @@ void loadObj(string fname)
         {
             if (tipo == "v")
             {
-                vector<float> vertice;
+                vec3 vertice;
                 arquivo >> x >> y >> z;
-                vertice.push_back(x);
-                vertice.push_back(y);
-                vertice.push_back(z);
+                vertice[0] = x;
+                vertice[1] = y;
+                vertice[2] = z;
                 object.vertices.push_back(vertice);
             }
 
             if (tipo == "f")
             {
-                vector<int> face;
+                vec3i face;
                 string v1, v2, v3;
                 arquivo >> v1 >> v2 >> v3;
-
-                vector<int> indices1;
-                indices1.reserve(3); // Reserve space for 3 indices
 
                 size_t pos1 = v1.find_first_of('/');
                 size_t pos2 = v2.find_first_of('/');
                 size_t pos3 = v3.find_first_of('/');
 
-                // Extract the first set of vertex indices
                 string vf1 = v1.substr(0, pos1);
                 string vf2 = v2.substr(0, pos2);
                 string vf3 = v3.substr(0, pos3);
 
-                indices1.push_back(stoi(vf1) - 1);
-                indices1.push_back(stoi(vf2) - 1);
-                indices1.push_back(stoi(vf3) - 1);
+                face[0] = stoi(vf1) - 1;
+                face[1] = stoi(vf2) - 1;
+                face[2] = stoi(vf3) - 1;
 
-                object.faces.push_back(indices1);
+                object.faces.push_back(face);
 
-                vector<int> indices2;
-                indices2.reserve(3); // Reserve space for 3 indices
+                vec3i normal;
 
-                // Extract the second set of vertex indices
                 vf1 = v1.substr(v1.find_last_of('/') + 1);
                 vf2 = v2.substr(v2.find_last_of('/') + 1);
                 vf3 = v3.substr(v3.find_last_of('/') + 1);
 
-                indices2.push_back(stoi(vf1) - 1);
-                indices2.push_back(stoi(vf2) - 1);
-                indices2.push_back(stoi(vf3) - 1);
+                normal[0] = stoi(vf1) - 1;
+                normal[1] = stoi(vf2) - 1;
+                normal[2] = stoi(vf3) - 1;
 
-                object.normal_faces.push_back(indices2);
+                object.normal_faces.push_back(normal);
             }
         }
         arquivo.close(); // Close the file after reading
@@ -158,18 +157,20 @@ void loadObj(string fname)
         glBegin(GL_TRIANGLES);
         for (size_t i = 0; i < object.faces.size(); i++)
         {
-            vector<int> face = object.faces[i];
-            vector<int> normal_face = object.normal_faces[i];
+            vec3i face = object.faces[i];
+            vec3i normal_face = object.normal_faces[i];
 
             for (int j = 0; j < 3; j++)
             {
                 int vertexIndex = face[j];
                 int normalIndex = normal_face[j];
+                //cout << "vertexIndex: " << vertexIndex << " normalIndex: " << normalIndex << endl;
+                //cout << "vertex: " << object.vertices[vertexIndex][0] << " " << object.vertices[vertexIndex][1] << " " << object.vertices[vertexIndex][2] << endl;
 
-                // glNormal3f(
-                //     object.vertices[normalIndex][0],
-                //     object.vertices[normalIndex][1],
-                //     object.vertices[normalIndex][2]);
+                glNormal3f(
+                    object.vertices[normalIndex][0],
+                    object.vertices[normalIndex][1],
+                    object.vertices[normalIndex][2]);
                 glVertex3f(
                     object.vertices[vertexIndex][0],
                     object.vertices[vertexIndex][1],
@@ -188,7 +189,7 @@ void reshape(int w, int h)
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(100, (GLfloat)w / (GLfloat)h, 0.1, 1000.0);
+    gluPerspective(60, (GLfloat)w / (GLfloat)h, 0.5, 2000.0);
 
     glMatrixMode(GL_MODELVIEW);
 }
