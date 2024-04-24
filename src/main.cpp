@@ -5,7 +5,7 @@
 #include <string>
 using namespace std;
 
-//globals
+// globals
 
 float rotation_angle = 0.0;
 float rotation_angle_x = 0.0;
@@ -14,7 +14,8 @@ float rotation_angle_z = 0.0;
 float translation_x = 0.0, translation_y = 0.0, translation_z = 0.0;
 float scale_factor = 1.0;
 
-struct Object {
+struct Object
+{
     vector<vector<float>> vertices;
     vector<vector<int>> faces;
     vector<vector<int>> normal_faces;
@@ -73,17 +74,19 @@ void keyboard(unsigned char key, int x, int y)
     case '-':
         scale_factor -= 0.1;
         break; // Scale down
-}
+    }
 }
 void loadObj(string fname)
 {
     float x, y, z;
     ifstream arquivo(fname);
-    if (!arquivo.is_open()) {
+    if (!arquivo.is_open())
+    {
         cout << "arquivo nao encontrado";
         exit(1);
     }
-    else {
+    else
+    {
         string tipo;
         while (arquivo >> tipo)
         {
@@ -153,26 +156,32 @@ void loadObj(string fname)
     {
         glPushMatrix();
         glBegin(GL_TRIANGLES);
-        for(size_t i = 0; i < object.faces.size(); i++)
+        for (size_t i = 0; i < object.faces.size(); i++)
+        {
+            vector<int> face = object.faces[i];
+            vector<int> normal_face = object.normal_faces[i];
+
+            for (int j = 0; j < 3; j++)
             {
-                vector<int> face = object.faces[i];
-                vector<int> normal_face = object.normal_faces[i];
+                int vertexIndex = face[j];
+                int normalIndex = normal_face[j];
 
-                glNormal3f(object.vertices[normal_face[0]][0], object.vertices[normal_face[0]][1], object.vertices[normal_face[0]][2]);
-                glVertex3f(object.vertices[face[0]][0], object.vertices[face[0]][1], object.vertices[face[0]][2]);
+                // glNormal3f(
+                //     object.vertices[normalIndex][0],
+                //     object.vertices[normalIndex][1],
+                //     object.vertices[normalIndex][2]);
+                glVertex3f(
+                    object.vertices[vertexIndex][0],
+                    object.vertices[vertexIndex][1],
+                    object.vertices[vertexIndex][2]);
             }
-            glEnd();
-            glPopMatrix();
         }
-
         glEnd();
-
-    glPopMatrix();
-    glEndList();
-    arquivo.close();
-
+        glPopMatrix();
+        glEndList();
+        arquivo.close();
+    }
 }
-
 
 void reshape(int w, int h)
 {
@@ -206,12 +215,13 @@ void display(void)
     glutSwapBuffers();
 }
 
-void timer(int value) {
+void timer(int value)
+{
     glutPostRedisplay();
     glutTimerFunc(10, timer, 0);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     if (argc != 2)
     {
