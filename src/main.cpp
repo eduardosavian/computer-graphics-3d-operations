@@ -3,6 +3,7 @@
 #include <vector>
 #include <GL/freeglut.h>
 #include <string>
+#include <cmath>
 using namespace std;
 
 // Globals
@@ -21,113 +22,162 @@ float rotation_angle_z = 0.0;
 float translation_x = 0.0, translation_y = 0.0, translation_z = 0.0;
 float scale_factor = 1.0;
 
-void initLight() {
+void initLight()
+{
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
-    GLfloat qaAmbientLight[] = { 0.2, 0.2, 0.2, 1.0 };
-    GLfloat qaDiffuseLight[] = { 0.8, 0.8, 0.8, 1.0 };
-    GLfloat qaSpecularLight[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat qaAmbientLight[] = {0.2, 0.2, 0.2, 1.0};
+    GLfloat qaDiffuseLight[] = {0.8, 0.8, 0.8, 1.0};
+    GLfloat qaSpecularLight[] = {1.0, 1.0, 1.0, 1.0};
     glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
     glLightfv(GL_LIGHT0, GL_SPECULAR, qaSpecularLight);
 
-    GLfloat qaLightPosition[] = { 0.6, 0.6, 0.0, 1.0 };
+    GLfloat qaLightPosition[] = {0.6, 0.6, 0.0, 1.0};
     glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition);
 }
 
-void keyboard(unsigned char key, int x, int y) {
-    switch(key) {
-        // Movement controls
-        case 'w': translation_y += 10.0; break; // Move object up
-        case 's': translation_y -= 10.0; break; // Move object down
-        case 'a': translation_x -= 10.0; break; // Move object left
-        case 'd': translation_x += 10.0; break; // Move object right
-        case 'q': translation_z += 10.0; break; // Move object closer
-        case 'e': translation_z -= 10.0; break; // Move object farther
+void keyboard(unsigned char key, int x, int y)
+{
+    switch (key)
+    {
+    // Movement controls
+    case 'w':
+        translation_y += 10.0;
+        break; // Move object up
+    case 's':
+        translation_y -= 10.0;
+        break; // Move object down
+    case 'a':
+        translation_x -= 10.0;
+        break; // Move object left
+    case 'd':
+        translation_x += 10.0;
+        break; // Move object right
+    case 'q':
+        translation_z += 10.0;
+        break; // Move object closer
+    case 'e':
+        translation_z -= 10.0;
+        break; // Move object farther
 
-        // Rotation controls
-        case 'i': rotation_angle_x += 10.0; break; // Rotate object up (around x-axis)
-        case 'k': rotation_angle_x -= 10.0; break; // Rotate object down (around x-axis)
-        case 'j': rotation_angle_y -= 10.0; break; // Rotate object left (around y-axis)
-        case 'l': rotation_angle_y += 10.0; break; // Rotate object right (around y-axis)
-        case 'u': rotation_angle_z += 10.0; break; // Rotate object clockwise (around z-axis)
-        case 'o': rotation_angle_z -= 10.0; break; // Rotate object counterclockwise (around z-axis)
+    // Rotation controls
+    case 'i':
+        rotation_angle_x += 10.0;
+        break; // Rotate object up (around x-axis)
+    case 'k':
+        rotation_angle_x -= 10.0;
+        break; // Rotate object down (around x-axis)
+    case 'j':
+        rotation_angle_y -= 10.0;
+        break; // Rotate object left (around y-axis)
+    case 'l':
+        rotation_angle_y += 10.0;
+        break; // Rotate object right (around y-axis)
+    case 'u':
+        rotation_angle_z += 10.0;
+        break; // Rotate object clockwise (around z-axis)
+    case 'o':
+        rotation_angle_z -= 10.0;
+        break; // Rotate object counterclockwise (around z-axis)
 
-        // Scaling controls
-        case '+': scale_factor += 0.1; break; // Scale up
-        case '-': scale_factor -= 0.1; break; // Scale down
-        case '1':
-            static bool diffuseEnabled = true;
-            if (diffuseEnabled)
-                glDisable(GL_LIGHT0); // Disable diffuse light
-            else
-                glEnable(GL_LIGHT0); // Enable diffuse light
-            diffuseEnabled = !diffuseEnabled;
-            break;
+    // Scaling controls
+    case '+':
+        scale_factor += 0.1;
+        break; // Scale up
+    case '-':
+        scale_factor -= 0.1;
+        break; // Scale down
+    case '1':
+        static bool diffuseEnabled = true;
+        if (diffuseEnabled)
+            glDisable(GL_LIGHT0); // Disable diffuse light
+        else
+            glEnable(GL_LIGHT0); // Enable diffuse light
+        diffuseEnabled = !diffuseEnabled;
+        break;
 
-        // Toggle specular light
-        case '2':
-            static bool specularEnabled = true;
-            if (specularEnabled)
-                glDisable(GL_LIGHTING); // Disable specular light
-            else
-                glEnable(GL_LIGHTING); // Enable specular light
-            specularEnabled = !specularEnabled;
-            break;
+    // Toggle specular light
+    case '2':
+        static bool specularEnabled = true;
+        if (specularEnabled)
+            glDisable(GL_LIGHTING); // Disable specular light
+        else
+            glEnable(GL_LIGHTING); // Enable specular light
+        specularEnabled = !specularEnabled;
+        break;
 
-        // Toggle ambient light
-        case '3':
-            static bool ambientEnabled = true;
-            if (ambientEnabled) {
-                    GLfloat qaAmbientLight[] = {0.2, 0.2, 0.2, 1.0}; // Adjust ambient light color and intensity here
-                    glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight); // Restore ambient light
-                } else {
-                    GLfloat qaNoAmbient[] = {0.0, 0.0, 0.0, 1.0};
-                    glLightfv(GL_LIGHT0, GL_AMBIENT, qaNoAmbient); // Set ambient light to zero
-                    }
-                ambientEnabled = !ambientEnabled;
-            break;
+    // Toggle ambient light
+    case '3':
+        static bool ambientEnabled = true;
+        if (ambientEnabled)
+        {
+            GLfloat qaAmbientLight[] = {0.2, 0.2, 0.2, 1.0};  // Adjust ambient light color and intensity here
+            glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight); // Restore ambient light
+        }
+        else
+        {
+            GLfloat qaNoAmbient[] = {0.0, 0.0, 0.0, 1.0};
+            glLightfv(GL_LIGHT0, GL_AMBIENT, qaNoAmbient); // Set ambient light to zero
+        }
+        ambientEnabled = !ambientEnabled;
+        break;
 
-        // Reset
-        case '0': // Reset figure
-            rotation_angle_x = 0.0;
-            rotation_angle_y = 45.0;
-            rotation_angle_z = 0.0;
-            translation_x = 0.0, translation_y = 0.0, translation_z = -800.0;
-            scale_factor = 1.0;
-            break;
+    // Reset
+    case '0': // Reset figure
+        rotation_angle_x = 0.0;
+        rotation_angle_y = 45.0;
+        rotation_angle_z = 0.0;
+        translation_x = 0.0, translation_y = 0.0, translation_z = -800.0;
+        scale_factor = 1.0;
+        break;
 
-        // Exit
-        case 27: exit(0); break; // ESC key to exit
+    // Exit
+    case 27:
+        exit(0);
+        break; // ESC key to exit
     }
-    cout << "Object Position: (" << translation_x << ", " << translation_y << ", " << translation_z << ")" << " Scale: " << scale_factor << endl;
+    cout << "Object Position: (" << translation_x << ", " << translation_y << ", " << translation_z << ")"
+         << " Scale: " << scale_factor << endl;
 
     glutPostRedisplay(); // Redraw scene
 }
 
-void loadObj(const string& fname) {
+void loadObj(const string &fname)
+{
     ifstream file(fname);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         cout << "File not found";
         exit(1);
-    } else {
+    }
+    else
+    {
         string type;
-        while (file >> type) {
-            if (type == "v") {
+        while (file >> type)
+        {
+            if (type == "v")
+            {
                 float x, y, z;
                 file >> x >> y >> z;
                 vertices.push_back({x, y, z});
-            } else if (type == "vn") {
+            }
+            else if (type == "vn")
+            {
                 float nx, ny, nz;
                 file >> nx >> ny >> nz;
                 normals.push_back({nx, ny, nz});
-            } else if (type == "vt") {
+            }
+            else if (type == "vt")
+            {
                 float u, v;
                 file >> u >> v;
                 textures.push_back({u, v});
-            } else if (type == "f") {
+            }
+            else if (type == "f")
+            {
                 string v1, v2, v3;
                 file >> v1 >> v2 >> v3;
 
@@ -163,8 +213,7 @@ void loadObj(const string& fname) {
 
                 normal_faces.push_back(indices2);
             }
-
-            }
+        }
     }
     file.close();
 
@@ -174,45 +223,45 @@ void loadObj(const string& fname) {
     cout << "Textures: " << textures.size() << endl;
     cout << "Texture Faces: " << texture_faces.size() << endl;
     cout << "Normal Faces: " << normal_faces.size() << endl;
-
 }
 
-
-void renderObj() {
+void renderObj()
+{
     glClear(GL_COLOR_BUFFER_BIT);
     object = glGenLists(1);
     glNewList(object, GL_COMPILE);
     glPushMatrix();
 
-    GLfloat green[] = { 0.0, 1.0, 0.0, 1.0 };
+    GLfloat green[] = {0.0, 1.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_SPECULAR, green);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, green);
     glMaterialf(GL_FRONT, GL_SHININESS, 60);
 
     glBegin(GL_TRIANGLES);
-    glBegin(GL_TRIANGLES);
-for (size_t i = 0; i < texture_faces.size(); ++i) {
-    const auto& face = texture_faces[i];
-    for (int j = 0; j < 3; ++j) {
-        int vertex_index = face[j];
-        if (vertex_index >= 0 && vertex_index < vertices.size()) {
-            glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
+    for (size_t i = 0; i < texture_faces.size(); ++i)
+    {
+        const auto &face = texture_faces[i];
+        for (int j = 0; j < 3; ++j)
+        {
+            int vertex_index = face[j];
+            int normal_index = normal_faces[i][j];
+            if (vertex_index < vertices.size())
+            {
+                glNormal3f(normals[normal_index][0], normals[normal_index][1], normals[normal_index][2]);
+                glVertex3f(vertices[vertex_index][0], vertices[vertex_index][1], vertices[vertex_index][2]);
+            }
+            else
+            {
+                cout << vertex_index << " out of range" << vertices.size() << endl;
+            }
         }
+        // Set the normal for the whole face
+        
+        
     }
-}
+    glEnd();
 
-for (size_t i = 0; i < normal_faces.size(); ++i) {
-    const auto& face = normal_faces[i];
-    for (int j = 0; j < 3; ++j) {
-        int vertex_index = face[j];
-        if (vertex_index >= 0 && vertex_index < vertices.size()) {
-            glNormal3f(normals[vertex_index][0], normals[vertex_index][1], normals[vertex_index][2]);
-        }
-    }
-}
-
-
-glEnd();
+    glEnd();
 
     glEnd();
 
@@ -225,7 +274,7 @@ void reshape(int w, int h)
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-1.0, 1.0,-1.0, 1.0,-1.0, 1.0);
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
     gluPerspective(60, (GLfloat)w / (GLfloat)h, 0.1, 10000.0);
 
     glMatrixMode(GL_MODELVIEW);
@@ -254,14 +303,15 @@ void display(void)
     glutSwapBuffers();
 }
 
-void timer(int value) {
+void timer(int value)
+{
     glutPostRedisplay();
     glutTimerFunc(10, timer, 0);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    if(argc != 2)
+    if (argc != 2)
     {
         cout << "Usage: " << argv[0] << " <obj_file_name>" << endl;
         return 1;
